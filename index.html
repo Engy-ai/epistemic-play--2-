@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Epistemic play</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  .leaflet-container {
+    background: #09090b !important;
+  }
+  
+  /* Photo-style Investigation Markers */
+  .investigation-marker-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .marker-inner {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    cursor: pointer;
+    background: #09090b;
+    border-radius: 0px; /* EDGY */
+    position: relative;
+    overflow: hidden;
+  }
+
+  .marker-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+
+  .marker-inner:hover {
+    transform: scale(1.15) translateY(-5px);
+    border-color: #ef4444;
+    z-index: 1000 !important;
+  }
+  
+  .marker-inner:hover img {
+    opacity: 1;
+  }
+
+  .marker-inner.active {
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
+    border-color: #ef4444 !important;
+    z-index: 2000 !important;
+  }
+
+  /* Facility Status Markers */
+  .facility-marker-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .facility-node {
+    transition: all 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0px; /* EDGY */
+    background: #18181b;
+    border: 1px solid #27272a;
+  }
+
+  .event-ping {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 0px; /* EDGY */
+    background: #ef4444;
+    opacity: 0;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes ping {
+    75%, 100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  /* Animations */
+  @keyframes slide-in {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .animate-in {
+    animation: slide-in 0.4s ease-out forwards;
+  }
+
+  /* Custom Slider Accent */
+  input[type=range]::-webkit-slider-thumb {
+    height: 24px;
+    width: 24px;
+    border-radius: 0px; /* EDGY */
+    background: #ef4444;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -8px;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+    border: 3px solid white;
+  }
+</style>
+<link rel="stylesheet" href="/index.css">
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "d3": "https://esm.sh/d3@^7.9.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "leaflet": "https://esm.sh/leaflet@1.9.4",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/epistemic-play/assets/index-B9V6SXbJ.js"></script>
+</head>
+  <body class="bg-[#09090b] text-zinc-100">
+    <div id="root"></div>
+</body>
+</html>
