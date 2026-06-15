@@ -27,6 +27,26 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
   const startDate = useMemo(() => new Date('2023-10-07'), []);
   const endDate = useMemo(() => new Date(), []);
 
+  // Month/year ticks under the timeline slider. Minor tick per month, major
+  // (labelled) tick per quarter, with the year shown each January.
+  const timelineTicks = useMemo(() => {
+    const span = endDate.getTime() - startDate.getTime();
+    const ticks: { pos: number; label: string; major: boolean; year?: string }[] = [];
+    const d = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    while (d < startDate) d.setMonth(d.getMonth() + 1);
+    while (d <= endDate) {
+      const month = d.getMonth();
+      ticks.push({
+        pos: ((d.getTime() - startDate.getTime()) / span) * 100,
+        label: d.toLocaleString('en-US', { month: 'short' }),
+        major: month % 3 === 0,
+        year: month === 0 ? String(d.getFullYear()) : undefined,
+      });
+      d.setMonth(d.getMonth() + 1);
+    }
+    return ticks;
+  }, [startDate, endDate]);
+
   const gazaStripCoords: [number, number][] = [
     [31.597, 34.530], [31.543, 34.542], [31.455, 34.475], [31.355, 34.385], [31.221, 34.254], [31.314, 34.180], [31.450, 34.350], [31.595, 34.490], [31.597, 34.530]
   ];
@@ -298,9 +318,17 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
                           <span className="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-tighter">{selectedInvestigation.methodology[0]}, {selectedInvestigation.methodology[1]}</span>
                        </div>
                     </div>
-                    <button className="text-[9px] font-black uppercase tracking-widest text-[var(--accent)] hover:text-[var(--accent)] flex items-center gap-2 border-b border-[var(--accent)] pb-0.5">
+                    {selectedInvestigation.links[0] && (
+                      <a
+                        href={selectedInvestigation.links[0].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-[9px] font-black uppercase tracking-widest text-[var(--accent)] hover:text-[var(--accent)] flex items-center gap-2 border-b border-[var(--accent)] pb-0.5"
+                      >
                        View Repo <ArrowUpRight size={10} />
-                    </button>
+                      </a>
+                    )}
                   </div>
                 </div>
              </div>
@@ -334,6 +362,19 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
            </button>
            <div className="flex-1">
               <input type="range" min={startDate.getTime()} max={endDate.getTime()} value={currentDate.getTime()} onChange={(e) => setCurrentDate(new Date(parseInt(e.target.value)))} className="w-full cursor-pointer" />
+              <div className="relative h-7 mt-1.5 select-none pointer-events-none">
+                 {timelineTicks.map((tk, i) => (
+                   <div key={i} className="absolute top-0 flex flex-col items-center -translate-x-1/2" style={{ left: `${tk.pos}%` }}>
+                      <div className={`w-px ${tk.major ? 'h-2 bg-[var(--text-muted)]' : 'h-1 bg-[var(--border-strong)]'}`} />
+                      {tk.major && (
+                        <span className="mt-0.5 text-[8px] sm:text-[9px] font-mono uppercase tracking-wide text-[var(--text-muted)] leading-none">{tk.label}</span>
+                      )}
+                      {tk.year && (
+                        <span className="mt-0.5 text-[8px] sm:text-[9px] font-black text-[var(--text-secondary)] leading-none">{tk.year}</span>
+                      )}
+                   </div>
+                 ))}
+              </div>
            </div>
         </div>
       </div>

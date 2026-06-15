@@ -84,11 +84,6 @@ const InvestigationCard: React.FC<Props> = ({ investigation, isHighlighted, onSe
             </>
           )}
 
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-             <div className="file-meta text-white/85">
-               Trace interpretation — conjectural reading of indicia
-             </div>
-          </div>
         </div>
       )}
 

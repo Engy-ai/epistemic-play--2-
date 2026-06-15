@@ -97,9 +97,6 @@ const ForensicIndex: React.FC<Props> = ({ investigations, selectedId, onSelect, 
         })}
       </div>
 
-      <div className="flex-shrink-0 p-3 border-t border-dashed border-[var(--border)] bg-[var(--bg-elevated)] file-meta text-center">
-        {investigations.length} entries on file · index complete
-      </div>
     </div>
   );
 };

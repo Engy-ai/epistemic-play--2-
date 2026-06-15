@@ -24,7 +24,8 @@ export const investigations: Investigation[] = [
     media: [
       { kind: "image", label: "FA case graphic – trajectory & impact", url: "https://content.forensic-architecture.org/wp-content/uploads/2024/02/Image-1-Rocket-Propellant-Analysis-2400x1350.jpg" },
       { kind: "image", label: "FA x Channel 4 report", url: "https://fa-public-assets.fra1.cdn.digitaloceanspaces.com/IsraeliDisinformation/GIF%204%20-%20Methodology%20-%20Panorama%20Paint.gif" },
-      { kind: "image", label: "FA: Analysis Workflow", url: "https://fa-public-assets.fra1.cdn.digitaloceanspaces.com/IsraeliDisinformation/GIF%205%20-%20Methodology%20-%20Analysis.gif" }
+      { kind: "image", label: "FA: Analysis Workflow", url: "https://fa-public-assets.fra1.cdn.digitaloceanspaces.com/IsraeliDisinformation/GIF%205%20-%20Methodology%20-%20Analysis.gif" },
+      { kind: "image", label: "Team review of 3D site reconstruction", url: `${import.meta.env.BASE_URL}fa-3d-model-review.png` }
     ],
     primaryEpistemicObject: "Trajectory & temporal synchronization",
     outcomeForm: "Forensic model-based reconstruction",
@@ -48,7 +49,9 @@ export const investigations: Investigation[] = [
     dataInputs: ["Videos of the blast", "Satellite imagery of impact site", "Witness statements in media"],
     keyFindings: "Assesses crater size, direction of fragmentation, and video timing to argue the explosion is most consistent with a locally launched rocket, while stressing major evidentiary gaps.",
     links: [{ label: "HRW report", url: "https://www.hrw.org/news/2023/11/26/gaza-findings-october-17-al-ahli-hospital-explosion" }],
-    media: [{ kind: "image", label: "Al-Ahli grounds aerial with crater", url: "https://www.hrw.org/sites/default/files/styles/modal/public/media_2023/11/202311mena_gaza_hospital_crater.jpg" }],
+    media: [
+      { kind: "image", label: "Burned-out vehicles in hospital courtyard", url: `${import.meta.env.BASE_URL}hrw-burned-cars-courtyard.png` }
+    ],
     primaryEpistemicObject: "Crater morphology & material damage",
     outcomeForm: "NGO technical report",
     epistemicParadigm: "Conjecture-led",
@@ -184,7 +187,8 @@ export const investigations: Investigation[] = [
       { label: "Who was behind the Gaza hospital blast", url: "https://www.channel4.com/news/who-was-behind-the-gaza-hospital-blast-visual-investigation" }
     ],
     media: [
-      { kind: "image", label: "FA x Channel 4 — Doppler & crater analysis", url: "https://fa-public-assets.fra1.cdn.digitaloceanspaces.com/IsraeliDisinformation/GIF%204%20-%20Methodology%20-%20Panorama%20Paint.gif" }
+      { kind: "image", label: "Doppler pitch — camera 150m SE of hospital", url: `${import.meta.env.BASE_URL}earshot-doppler-se.png` },
+      { kind: "image", label: "Spectrogram — camera 1500m NW of hospital", url: `${import.meta.env.BASE_URL}earshot-spectrogram-nw.png` }
     ],
     primaryEpistemicObject: "Doppler signature & audio provenance",
     outcomeForm: "Acoustic forensic model",
@@ -210,7 +214,12 @@ export const investigations: Investigation[] = [
       { label: "Scribd technical report", url: "https://www.scribd.com/document/721217432/Reverse-Engineering-Al-Ahli-Hospital-Attack-En" }
     ],
     media: [
-      { kind: "image", label: "FA trajectory analysis reference", url: "https://content.forensic-architecture.org/wp-content/uploads/2024/02/Image-1-Rocket-Propellant-Analysis-2400x1350.jpg" }
+      { kind: "image", label: "Normalized Doppler curves by impact angle", url: `${import.meta.env.BASE_URL}kobs-3-normalized-curves-angles.png` },
+      { kind: "image", label: "Geolocated trajectory lines over hospital grounds", url: `${import.meta.env.BASE_URL}kobs-1-trajectory-map.png` },
+      { kind: "image", label: "Doppler effect by emitter frequency", url: `${import.meta.env.BASE_URL}kobs-2-doppler-emitter-freq.png` },
+      { kind: "image", label: "Blender photo-matching of impact site", url: `${import.meta.env.BASE_URL}kobs-4-blender-photomatch.png` },
+      { kind: "image", label: "Normalized curve model — Max f_norm", url: `${import.meta.env.BASE_URL}kobs-5-max-normalized.png` },
+      { kind: "image", label: "Doppler curves by launch distance", url: `${import.meta.env.BASE_URL}kobs-6-distance-curves.png` }
     ],
     primaryEpistemicObject: "Computational Doppler curve simulation",
     outcomeForm: "Independent technical report",
@@ -237,7 +246,8 @@ export const investigations: Investigation[] = [
       { label: "Maher Arar Blog Part I", url: "https://ararmaher.wordpress.com/" }
     ],
     media: [
-      { kind: "image", label: "Al-Ahli grounds aerial with crater", url: "https://www.hrw.org/sites/default/files/styles/modal/public/media_2023/11/202311mena_gaza_hospital_crater.jpg" }
+      { kind: "image", label: "CNN crater footage — fragment pieces #1 & #2", url: `${import.meta.env.BASE_URL}maherarar-1-cnn-crater-pieces.png` },
+      { kind: "image", label: "GBU-39 small-diameter bomb", url: `${import.meta.env.BASE_URL}maherarar-2-gbu39.png` }
     ],
     primaryEpistemicObject: "GBU-39 / GBU-53 munition compatibility",
     outcomeForm: "Independent OSINT blog analysis",
