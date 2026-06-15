@@ -38,9 +38,10 @@ const MethodologyNetwork: React.FC<Props> = ({ mini = false, investigations, onS
       id: inv.id,
       label: inv.outlet,
       type: 'outlet',
-      color: inv.actorType.includes('State') ? '#ef4444' : 
+      color: inv.actorType.includes('State') ? 'var(--accent)' : 
              inv.actorType.includes('NGO') ? '#10b981' : 
-             inv.actorType.includes('Newsroom') ? '#f59e0b' : '#8b5cf6',
+             inv.actorType.includes('Newsroom') ? '#f59e0b' : 
+             inv.actorType.includes('Independent') ? '#a855f7' : '#8b5cf6',
       invId: inv.id
     }));
 
@@ -106,30 +107,30 @@ const MethodologyNetwork: React.FC<Props> = ({ mini = false, investigations, onS
   };
 
   return (
-    <div className={`bg-zinc-950 border border-zinc-800 overflow-hidden relative shadow-2xl h-full flex flex-col group/network ${mini ? 'p-3' : 'p-6'}`}>
+    <div className={`bg-[var(--bg-panel)] border border-[var(--border)] overflow-hidden relative shadow-2xl h-full w-full max-w-full min-w-0 flex flex-col group/network ${mini ? 'p-3' : 'p-6'}`}>
       {!mini && (
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 z-10">
           <div className="flex justify-center gap-6">
-            <div className="flex items-center gap-2 text-[8px] font-black uppercase text-zinc-500 tracking-widest">
-              <div className="w-2 h-2 bg-red-500"></div> State
+            <div className="flex items-center gap-2 text-[8px] font-black uppercase text-[var(--text-muted)] tracking-widest">
+              <div className="w-2 h-2 rounded-full bg-[var(--accent)]"></div> State
             </div>
-            <div className="flex items-center gap-2 text-[8px] font-black uppercase text-zinc-500 tracking-widest">
-              <div className="w-2 h-2 bg-emerald-500"></div> NGO
+            <div className="flex items-center gap-2 text-[8px] font-black uppercase text-[var(--text-muted)] tracking-widest">
+              <div className="w-2 h-2 rounded-full bg-[var(--stance-palestinian)]"></div> NGO
             </div>
-            <div className="flex items-center gap-2 text-[8px] font-black uppercase text-zinc-500 tracking-widest">
-              <div className="w-2 h-2 bg-amber-500"></div> Media
+            <div className="flex items-center gap-2 text-[8px] font-black uppercase text-[var(--text-muted)] tracking-widest">
+              <div className="w-2 h-2 rounded-full bg-[var(--stance-uncertain)]"></div> Media
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-black/40 p-1 border border-zinc-800">
-             <button onClick={handleReset} className="p-2 text-zinc-500 hover:text-white transition-colors" title="Reset View"><Maximize size={14} /></button>
+          <div className="flex items-center gap-2 bg-black/40 p-1 border border-[var(--border)]">
+             <button onClick={handleReset} className="p-2 text-[var(--text-muted)] hover:text-white transition-colors" title="Reset View"><Maximize size={14} /></button>
           </div>
         </div>
       )}
 
       {!mini && (
         <div className="absolute top-24 left-10 flex items-center gap-2 opacity-30 group-hover/network:opacity-80 transition-opacity pointer-events-none z-10">
-           <MousePointer2 size={12} className="text-zinc-500" />
-           <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Dynamic Methodology Graph</span>
+           <MousePointer2 size={12} className="text-[var(--text-muted)]" />
+           <span className="text-[8px] font-black text-[var(--text-muted)] uppercase tracking-widest">Dynamic Methodology Graph</span>
         </div>
       )}
 
@@ -148,7 +149,7 @@ const MethodologyNetwork: React.FC<Props> = ({ mini = false, investigations, onS
                   key={i}
                   x1={source.x || 0} y1={source.y || 0}
                   x2={target.x || 0} y2={target.y || 0}
-                  stroke={isHighlighted ? '#ef4444' : '#27272a'}
+                  stroke={isHighlighted ? 'var(--accent)' : 'var(--border)'}
                   strokeWidth={isHighlighted ? 1.5 : 0.5}
                   opacity={isHighlighted ? 0.6 : 0.2}
                   className="transition-all duration-300"

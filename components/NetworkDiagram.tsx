@@ -58,7 +58,7 @@ const NetworkDiagram: React.FC<Props> = ({ investigations }) => {
       .attr("stroke-width", d => Math.sqrt(d.sharedCount) * 1.5);
 
     const actorColors: { [key: string]: string } = {
-      "State actor / intelligence": "#ef4444",
+      "State actor / intelligence": "var(--accent)",
       "NGO / human rights": "#22c55e",
       "Newsroom / media": "#eab308",
       "OSINT / research agency": "#a855f7",
@@ -118,12 +118,12 @@ const NetworkDiagram: React.FC<Props> = ({ investigations }) => {
   }, [investigations]);
 
   return (
-    <div ref={containerRef} className="w-full bg-zinc-900 border border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-inner relative">
+    <div ref={containerRef} className="w-full bg-[var(--bg-panel)] border border-[var(--border)] rounded-[2.5rem] overflow-hidden shadow-inner relative">
       <div className="absolute top-6 right-6 flex flex-col gap-2">
-         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-zinc-500 tracking-widest"><div className="w-2 h-2 rounded-full bg-red-500"></div> State</div>
-         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-zinc-500 tracking-widest"><div className="w-2 h-2 rounded-full bg-emerald-500"></div> NGO</div>
-         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-zinc-500 tracking-widest"><div className="w-2 h-2 rounded-full bg-amber-500"></div> Media</div>
-         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-zinc-500 tracking-widest"><div className="w-2 h-2 rounded-full bg-purple-500"></div> OSINT</div>
+         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-[var(--text-muted)] tracking-widest"><div className="w-2 h-2 rounded-full bg-[var(--accent)]"></div> State</div>
+         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-[var(--text-muted)] tracking-widest"><div className="w-2 h-2 rounded-full bg-[var(--stance-palestinian)]"></div> NGO</div>
+         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-[var(--text-muted)] tracking-widest"><div className="w-2 h-2 rounded-full bg-[var(--stance-uncertain)]"></div> Media</div>
+         <div className="flex items-center gap-2 text-[8px] font-black uppercase text-[var(--text-muted)] tracking-widest"><div className="w-2 h-2 rounded-full bg-[var(--text-muted)]"></div> OSINT</div>
       </div>
       <svg ref={svgRef} />
     </div>

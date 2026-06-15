@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Temp working dirs
+.tmp_figures/
+.tmp_pypdf/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

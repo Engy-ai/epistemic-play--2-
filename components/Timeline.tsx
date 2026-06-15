@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 import { Investigation } from '../types';
 
@@ -12,13 +12,16 @@ interface Props {
 const Timeline: React.FC<Props> = ({ investigations, highlightedId, onSelect }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(1200);
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
 
   const data = useMemo(() => {
     return investigations
       .filter(d => d.publicationDate)
       .map(d => ({
         ...d,
-        date: new Date(d.publicationDate)
+        date: new Date(d.publicationDate),
       }))
       .sort((a, b) => {
         const timeDiff = a.date.getTime() - b.date.getTime();
@@ -27,20 +30,34 @@ const Timeline: React.FC<Props> = ({ investigations, highlightedId, onSelect }) 
       });
   }, [investigations]);
 
-  const getShortName = (name: string) => {
-    if (name.includes("Washington Post")) return "Washington Post";
-    if (name.includes("Forensic Architecture")) return "Forensic Arch";
-    if (name.includes("Human Rights Watch")) return "Human Rights Watch"; 
-    if (name.includes("BBC")) return "BBC Verify";
-    if (name.includes("Bellingcat")) return "Bellingcat";
+  const getShortName = useCallback((name: string) => {
+    if (name.includes('Washington Post')) return 'Washington Post';
+    if (name.includes('Forensic Architecture')) return 'Forensic Arch';
+    if (name.includes('Human Rights Watch')) return 'Human Rights Watch';
+    if (name.includes('BBC')) return 'BBC Verify';
+    if (name.includes('Bellingcat')) return 'Bellingcat';
+    if (name.includes('Michael Kobs')) return 'Michael Kobs';
+    if (name.includes('Maher Arar')) return 'Maher Arar';
+    if (name.includes('Earshot')) return 'Earshot';
+    if (name.includes('New York Times')) return 'NYT Visual';
     return name;
-  };
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const updateWidth = () => setContainerWidth(Math.max(el.clientWidth, 640));
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!svgRef.current || data.length === 0) return;
 
-    const timelineWidth = 1800;
-    const height = 600; 
+    const timelineWidth = Math.max(containerWidth, 640);
+    const height = Math.min(600, Math.max(360, Math.round(window.innerHeight * 0.38)));
     const margin = { top: 40, right: 150, bottom: 80, left: 150 };
 
     const svg = d3.select(svgRef.current)
@@ -48,201 +65,243 @@ const Timeline: React.FC<Props> = ({ investigations, highlightedId, onSelect }) 
       .attr('height', height)
       .style('overflow', 'visible');
 
-    svg.selectAll("*").remove();
+    svg.selectAll('*').remove();
 
     const minDate = d3.min(data, d => d.date) || new Date();
     const maxDate = d3.max(data, d => d.date) || new Date();
-    
-    const displayMin = new Date(minDate.getTime() - (24 * 60 * 60 * 1000 * 45));
-    const displayMax = new Date(maxDate.getTime() + (24 * 60 * 60 * 1000 * 45));
+    const displayMin = new Date(minDate.getTime() - 45 * 86400000);
+    const displayMax = new Date(maxDate.getTime() + 45 * 86400000);
 
     const x = d3.scaleTime()
       .domain([displayMin, displayMax])
       .range([margin.left, timelineWidth - margin.right]);
 
     const colorMap = (type: string) => {
-      if (type.includes("State")) return "#ef4444";
-      if (type.includes("NGO")) return "#10b981";
-      if (type.includes("Newsroom")) return "#f59e0b";
-      return "#8b5cf6";
+      if (type.includes('State')) return 'var(--accent)';
+      if (type.includes('NGO')) return 'var(--stance-palestinian)';
+      if (type.includes('Newsroom')) return 'var(--stance-uncertain)';
+      if (type.includes('Independent')) return 'var(--paradigm-hybrid)';
+      return 'var(--text-muted)';
     };
 
-    const xAxis = d3.axisBottom(x)
-      .ticks(15)
-      .tickSize(10)
-      .tickFormat(d => d3.timeFormat("%d %b %Y")(d as Date));
+    const axisG = svg.append('g')
+      .attr('transform', `translate(0, ${height - 60})`)
+      .call(
+        d3.axisBottom(x)
+          .ticks(15)
+          .tickSize(10)
+          .tickFormat(d => d3.timeFormat('%d %b %Y')(d as Date))
+      )
+      .attr('color', 'var(--border)');
 
-    const axisG = svg.append("g")
-      .attr("transform", `translate(0, ${height - 60})`)
-      .call(xAxis)
-      .attr("color", "#27272a");
+    axisG.selectAll('text')
+      .attr('font-size', '10px')
+      .attr('font-weight', '900')
+      .attr('dy', '22px')
+      .style('text-transform', 'uppercase')
+      .style('letter-spacing', '0.08em')
+      .style('fill', 'var(--text-dim)');
 
-    axisG.selectAll("text")
-      .attr("font-size", "10px")
-      .attr("font-weight", "900")
-      .attr("dy", "22px")
-      .style("text-transform", "uppercase")
-      .style("letter-spacing", "0.08em")
-      .style("fill", "#52525b");
+    svg.append('rect')
+      .attr('x', margin.left)
+      .attr('y', height - 63)
+      .attr('width', timelineWidth - margin.left - margin.right)
+      .attr('height', 6)
+      .attr('rx', 3)
+      .attr('ry', 3)
+      .attr('fill', 'var(--bg-elevated)')
+      .attr('stroke', 'var(--border)')
+      .attr('stroke-width', 1);
 
-    svg.append("rect")
-      .attr("x", margin.left)
-      .attr("y", height - 63)
-      .attr("width", timelineWidth - margin.left - margin.right)
-      .attr("height", 6)
-      .attr("rx", 0) // EDGY
-      .attr("fill", "#18181b")
-      .attr("stroke", "#27272a")
-      .attr("stroke-width", 1);
-
-    const labelWidth = 300; 
+    const labelWidth = 300;
     const horizontalBuffer = 80;
-    const levelLastX: number[] = new Array(12).fill(0); 
-    
+    const levelLastX: number[] = new Array(12).fill(0);
+
     const labelLevels = data.map((d) => {
       const currentX = x(d.date);
-      const startX = currentX - (labelWidth / 2);
-      const endX = currentX + (labelWidth / 2);
-      
+      const startX = currentX - labelWidth / 2;
+      const endX = currentX + labelWidth / 2;
       let level = 0;
       while (level < levelLastX.length) {
-        if (startX > levelLastX[level] + horizontalBuffer) { 
+        if (startX > levelLastX[level] + horizontalBuffer) {
           levelLastX[level] = endX;
           return level;
         }
         level++;
       }
-      return levelLastX.length - 1; 
+      return levelLastX.length - 1;
     });
 
-    const getLabelY = (level: number) => (height - 105) - (level * 44);
+    const getLabelY = (level: number) => height - 105 - level * 44;
 
-    const points = svg.selectAll(".point")
+    const guideLine = svg.append('line')
+      .attr('class', 'timeline-guide')
+      .attr('y1', 20)
+      .attr('y2', height - 60)
+      .attr('stroke', 'var(--accent)')
+      .attr('stroke-width', 1)
+      .attr('stroke-dasharray', '4,4')
+      .attr('opacity', 0)
+      .style('pointer-events', 'none');
+
+    const setHover = (point: d3.Selection<SVGGElement, typeof data[0], SVGGElement, unknown>, active: boolean) => {
+      const isSelected = (d: typeof data[0]) => d.id === highlightedId;
+      point.select('.timeline-node')
+        .attr('stroke-width', (d) => (active || isSelected(d)) ? 4 : 3)
+        .attr('fill', (d) => (active || isSelected(d)) ? colorMap(d.actorType) : 'var(--bg-panel)');
+      point.select('.timeline-label-bg')
+        .attr('opacity', (d) => (active || isSelected(d)) ? 0.1 : 0);
+      point.select('.timeline-label-name')
+        .attr('fill', (d) => (active || isSelected(d)) ? 'var(--text)' : 'var(--text-muted)');
+      point.select('.timeline-label-date')
+        .attr('fill', (d) => (active || isSelected(d)) ? 'var(--accent)' : 'var(--text-dim)');
+      point.select('.timeline-stem')
+        .attr('opacity', (d) => (active || isSelected(d)) ? 0.6 : 0.3);
+    };
+
+    const clearAllHover = () => {
+      svg.selectAll<SVGGElement, typeof data[0]>('.point').each(function () {
+        setHover(d3.select(this), false);
+      });
+    };
+
+    const points = svg.selectAll('.point')
       .data(data)
       .enter()
-      .append("g")
-      .attr("class", "point")
-      .style("cursor", "pointer")
-      .on("click", (e, d) => onSelect(d.id));
+      .append('g')
+      .attr('class', 'point')
+      .style('cursor', 'pointer')
+      .on('click', (_, d) => onSelectRef.current(d.id))
+      .on('mouseenter', function (_, d) {
+        clearAllHover();
+        setHover(d3.select(this), true);
+        const cx = x(d.date);
+        guideLine.attr('x1', cx).attr('x2', cx).attr('opacity', 0.35);
+      })
+      .on('mouseleave', function () {
+        setHover(d3.select(this), false);
+        guideLine.attr('opacity', 0);
+      });
 
-    const guideLine = svg.append("line")
-      .attr("y1", 20)
-      .attr("y2", height - 60)
-      .attr("stroke", "#ef4444")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "4,4")
-      .attr("opacity", 0)
-      .style("pointer-events", "none");
+    points.each(function (d, i) {
+      const g = d3.select(this);
+      const cx = x(d.date);
+      const level = labelLevels[i];
+      const labelY = getLabelY(level);
+      const selected = d.id === highlightedId;
+      const color = colorMap(d.actorType);
+      const nodeSize = selected ? 22 : 16;
+      const nodeOffset = nodeSize / 2;
 
-    svg.on("mousemove", (event) => {
-      const [mouseX] = d3.pointer(event);
-      if (mouseX >= margin.left && mouseX <= timelineWidth - margin.right) {
-        guideLine.attr("x1", mouseX).attr("x2", mouseX).attr("opacity", 0.3);
-      } else {
-        guideLine.attr("opacity", 0);
+      if (selected) {
+        g.append('rect')
+          .attr('class', 'timeline-glow')
+          .attr('x', cx - 20)
+          .attr('y', height - 80)
+          .attr('width', 40)
+          .attr('height', 40)
+          .attr('rx', 20)
+          .attr('ry', 20)
+          .attr('fill', color)
+          .attr('opacity', 0.25)
+          .style('pointer-events', 'none');
       }
-    }).on("mouseleave", () => {
-      guideLine.attr("opacity", 0);
+
+      g.append('line')
+        .attr('class', 'timeline-stem')
+        .attr('x1', cx)
+        .attr('x2', cx)
+        .attr('y1', height - 60)
+        .attr('y2', labelY + 20)
+        .attr('stroke', color)
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', '4,2')
+        .attr('opacity', selected ? 0.6 : 0.3)
+        .style('pointer-events', 'none');
+
+      g.append('rect')
+        .attr('class', 'timeline-hit')
+        .attr('x', cx - 24)
+        .attr('y', height - 84)
+        .attr('width', 48)
+        .attr('height', 48)
+        .attr('fill', 'transparent');
+
+      g.append('rect')
+        .attr('class', 'timeline-node')
+        .attr('x', cx - nodeOffset)
+        .attr('y', height - 60 - nodeOffset)
+        .attr('width', nodeSize)
+        .attr('height', nodeSize)
+        .attr('rx', nodeOffset)
+        .attr('ry', nodeOffset)
+        .attr('fill', selected ? color : 'var(--bg-panel)')
+        .attr('stroke', color)
+        .attr('stroke-width', selected ? 4 : 3)
+        .style('pointer-events', 'none');
+
+      const labels = g.append('g')
+        .attr('class', 'timeline-label')
+        .attr('transform', `translate(${cx}, ${labelY})`)
+        .style('pointer-events', 'none');
+
+      labels.append('rect')
+        .attr('class', 'timeline-label-bg')
+        .attr('x', -85)
+        .attr('y', -30)
+        .attr('width', 170)
+        .attr('height', 55)
+        .attr('rx', 12)
+        .attr('ry', 12)
+        .attr('fill', 'var(--accent)')
+        .attr('opacity', selected ? 0.1 : 0);
+
+      labels.append('text')
+        .attr('class', 'timeline-label-name')
+        .attr('text-anchor', 'middle')
+        .attr('fill', selected ? 'var(--text)' : 'var(--text-muted)')
+        .attr('font-size', '11px')
+        .attr('font-weight', '900')
+        .text(getShortName(d.outlet));
+
+      labels.append('text')
+        .attr('class', 'timeline-label-date')
+        .attr('y', 18)
+        .attr('text-anchor', 'middle')
+        .attr('fill', selected ? 'var(--accent)' : 'var(--text-dim)')
+        .attr('font-size', '9px')
+        .attr('font-weight', '800')
+        .text(d3.timeFormat('%d %b %Y')(d.date));
     });
 
-    points.filter(d => d.id === highlightedId)
-      .append("rect") // EDGY GLOW
-      .attr("x", d => x(d.date) - 20)
-      .attr("y", height - 80)
-      .attr("width", 40)
-      .attr("height", 40)
-      .attr("fill", d => colorMap(d.actorType))
-      .attr("opacity", 0.3)
-      .attr("class", "glow-pulse");
+    const track = svg.append('rect')
+      .attr('class', 'timeline-track')
+      .attr('x', margin.left)
+      .attr('y', 0)
+      .attr('width', timelineWidth - margin.left - margin.right)
+      .attr('height', height)
+      .attr('fill', 'transparent')
+      .lower();
 
-    points.append("line")
-      .attr("x1", d => x(d.date))
-      .attr("x2", d => x(d.date))
-      .attr("y1", height - 60)
-      .attr("y2", (d, i) => getLabelY(labelLevels[i]) + 20)
-      .attr("stroke", d => colorMap(d.actorType))
-      .attr("stroke-width", 2)
-      .attr("stroke-dasharray", "4,2")
-      .attr("opacity", 0.3);
+    track.on('mousemove', (event) => {
+      const [mouseX] = d3.pointer(event);
+      if (mouseX >= margin.left && mouseX <= timelineWidth - margin.right) {
+        guideLine.attr('x1', mouseX).attr('x2', mouseX).attr('opacity', 0.15);
+      }
+    }).on('mouseleave', () => {
+      guideLine.attr('opacity', 0);
+    });
 
-    points.append("rect") // EDGY NODE
-      .attr("x", d => x(d.date) - (d.id === highlightedId ? 11 : 8))
-      // Fix: Wrapping the value in an arrow function to provide 'd' to the callback scope.
-      .attr("y", d => (height - 60) - (d.id === highlightedId ? 11 : 8))
-      .attr("width", d => d.id === highlightedId ? 22 : 16)
-      .attr("height", d => d.id === highlightedId ? 22 : 16)
-      .attr("fill", d => d.id === highlightedId ? colorMap(d.actorType) : "#000")
-      .attr("stroke", d => colorMap(d.actorType))
-      .attr("stroke-width", 3)
-      .attr("class", "transition-all duration-500 hover:scale-125");
-
-    const labels = points.append("g")
-      .attr("transform", (d, i) => `translate(${x(d.date)}, ${getLabelY(labelLevels[i])})`);
-
-    labels.append("rect")
-      .attr("x", -85)
-      .attr("y", -30)
-      .attr("width", 170)
-      .attr("height", 55)
-      .attr("rx", 0) // EDGY
-      .attr("fill", "#ffffff")
-      .attr("opacity", d => d.id === highlightedId ? 0.08 : 0);
-
-    labels.append("text")
-      .attr("text-anchor", "middle")
-      .attr("fill", d => d.id === highlightedId ? "#ffffff" : "#a1a1aa")
-      .attr("font-size", "11px")
-      .attr("font-weight", "900")
-      .attr("class", "uppercase tracking-tighter transition-colors duration-300")
-      .text(d => getShortName(d.outlet));
-
-    labels.append("text")
-      .attr("y", 18)
-      .attr("text-anchor", "middle")
-      .attr("fill", d => d.id === highlightedId ? "#ef4444" : "#52525b")
-      .attr("font-size", "9px")
-      .attr("font-weight", "800")
-      .attr("class", "uppercase tracking-widest")
-      .text(d => d3.timeFormat("%d %b %Y")(d.date));
-
-  }, [data, highlightedId, onSelect]);
+  }, [data, highlightedId, containerWidth, getShortName]);
 
   return (
-    <div ref={scrollRef} className="w-full h-[600px] overflow-x-auto overflow-y-hidden custom-scrollbar bg-black/20 rounded-none border border-zinc-800/50">
-      <div className="relative" style={{ width: '1800px' }}>
-        <svg ref={svgRef} className="mx-auto" />
+    <div
+      ref={scrollRef}
+      className="w-full max-w-full h-[600px] overflow-x-auto overflow-y-hidden custom-scrollbar bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl"
+    >
+      <div className="relative pt-10" style={{ width: `${Math.max(containerWidth, 600)}px`, maxWidth: 'none' }}>
+        <svg ref={svgRef} className="block" />
       </div>
-      <style>{`
-        .glow-pulse {
-          animation: pulse 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
-          transform-origin: center;
-          transform-box: fill-box;
-        }
-        @keyframes pulse {
-          0%, 100% { transform: scale(0.7); opacity: 0.1; }
-          50% { transform: scale(1.4); opacity: 0.5; }
-        }
-        .point:hover rect:first-of-type {
-           stroke-width: 5px;
-           filter: brightness(1.3);
-        }
-        .point:hover text:first-of-type {
-           fill: white;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #09090b;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #27272a;
-          border-radius: 0px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #ef4444;
-        }
-      `}</style>
     </div>
   );
 };

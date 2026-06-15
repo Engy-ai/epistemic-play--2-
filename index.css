@@ -1,0 +1,362 @@
+/* Friendly light color system */
+:root {
+  --bg: #f4f4f5;
+  --bg-panel: #ffffff;
+  --bg-elevated: #ececee;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --accent: #e2574f;
+  --accent-bright: #cf463e;
+  --accent-dim: rgba(226, 87, 79, 0.10);
+  --accent-glow: rgba(226, 87, 79, 0.22);
+  --text: #1f1f22;
+  --text-secondary: #46464b;
+  --text-muted: #71717a;
+  --text-dim: #a1a1aa;
+  --stance-israeli: #e2574f;
+  --stance-palestinian: #2f9e57;
+  --stance-uncertain: #d8870f;
+  --paradigm-conjecture: #c9810b;
+  --paradigm-model: #2483c5;
+  --paradigm-hybrid: #7c5cd6;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --shadow-soft: 0 1px 2px rgba(24, 24, 27, 0.04), 0 8px 24px rgba(24, 24, 27, 0.06);
+  --paper-line: rgba(24, 24, 27, 0.07);
+}
+
+html, body, #root {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Warm depth wash on the page so it doesn't read as a flat fill */
+.app-shell {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(1200px 600px at 8% -5%, rgba(24, 24, 27, 0.05), transparent 60%),
+    radial-gradient(1000px 700px at 100% 0%, rgba(24, 24, 27, 0.04), transparent 55%),
+    radial-gradient(900px 900px at 50% 120%, rgba(24, 24, 27, 0.04), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Subtle paper grain overlaid on the whole page for a printed feel */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Editorial section surfaces with a paradigm-coloured identity ---- */
+.feature-section {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.feature-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tint-amber,
+.tint-blue,
+.tint-violet,
+.tint-accent,
+.tint-neutral {
+  --section-accent: var(--text-secondary);
+  background: var(--bg-panel);
+}
+
+.section-accent-text { color: var(--section-accent, var(--accent)); }
+
+/* ----------------------- Document / dossier kit ----------------------- */
+
+.font-serif-display { font-family: var(--font-serif); }
+.font-doc-mono { font-family: var(--font-mono); }
+
+/* Monospace file annotation (corners, refs, dates) */
+.file-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Folder tab that sits on the top edge of a case-file section */
+.file-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--section-accent, var(--accent));
+  padding: 5px 14px 6px;
+  border-radius: 9px 9px 0 0;
+}
+
+/* File header strip: tab + ref on the left, page/date meta on the right */
+.file-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: -4px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* A rubber-stamp style label */
+.stamp {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border: 1.5px solid currentColor;
+  border-radius: 4px;
+  transform: rotate(-2.5deg);
+  opacity: 0.92;
+  white-space: nowrap;
+}
+
+/* Punched binder holes down the left margin */
+.punched { position: relative; }
+.punched::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 26px;
+  bottom: 26px;
+  width: 11px;
+  background-image: radial-gradient(circle at center, color-mix(in srgb, var(--text) 14%, transparent) 0 4px, transparent 5px);
+  background-size: 11px 60px;
+  background-repeat: repeat-y;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* Dotted leader rows (label .......... value) */
+.leader-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.leader-row .leader-fill {
+  flex: 1;
+  border-bottom: 1px dotted var(--border-strong);
+  transform: translateY(-3px);
+}
+
+/* Subtle ruled-paper backing for note blocks */
+.ruled-note {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 21px,
+    var(--paper-line) 22px
+  );
+  background-position: 0 6px;
+}
+
+.app-shell,
+.app-main,
+.panel-section {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.app-main { overflow-x: hidden; }
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .hero-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); }
+}
+
+.thesis-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.thesis-accent { color: var(--accent); }
+.thesis-muted { color: var(--text-muted); }
+.thesis-mono { font-family: var(--font-mono); }
+
+.thesis-btn-primary {
+  background: var(--accent);
+  border: 1px solid var(--accent-bright);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  transition: all 0.2s ease;
+}
+.thesis-btn-primary:hover { background: var(--accent-bright); transform: translateY(-1px); }
+
+.thesis-btn-secondary {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+.thesis-btn-secondary:hover { color: var(--text); background: var(--bg-elevated); }
+
+.thesis-tab-active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.thesis-tab {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.thesis-tab:hover { border-color: var(--border-strong); color: var(--text-secondary); }
+
+.thesis-selected {
+  border: 1px solid var(--accent) !important;
+  background: var(--accent-dim);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: var(--bg); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-strong); }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+.leaflet-container { background: var(--bg) !important; }
+
+.investigation-marker-container,
+.facility-marker-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-inner {
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(24,24,27,0.18);
+  cursor: pointer;
+  background: var(--bg-panel);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 2px solid var(--border-strong);
+}
+
+.marker-inner img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+.marker-inner:hover, .marker-inner.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.facility-node {
+  border-radius: 9999px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.event-ping { border-radius: 9999px; background: var(--accent); }
+
+@keyframes ping {
+  75%, 100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(-12px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-in { animation: slide-in 0.35s ease-out forwards; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  height: 2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px; width: 16px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--accent-glow);
+  margin-top: -7px;
+}
+
+/* Paradigm & stance tints — matches thesis tables */
+.bg-paradigm-conjecture { background: rgba(251, 191, 36, 0.06); border-color: rgba(251, 191, 36, 0.25); }
+.bg-paradigm-model { background: rgba(56, 189, 248, 0.06); border-color: rgba(56, 189, 248, 0.25); }
+.bg-paradigm-hybrid { background: rgba(167, 139, 250, 0.06); border-color: rgba(167, 139, 250, 0.25); }
+.bg-stance-israeli { background: rgba(230, 57, 70, 0.1); border-color: rgba(230, 57, 70, 0.3); }
+.bg-stance-palestinian { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); }
+.bg-stance-uncertain { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); }
+.bg-accent-dim { background: var(--accent-dim); }
+
+/* Evidence logic flow — hatch patterns from thesis diagram */
+.logic-hatch-model {
+  background-color: var(--bg-panel);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(56, 189, 248, 0.12) 4px,
+    rgba(56, 189, 248, 0.12) 5px
+  );
+}
+
+.logic-hatch-ruled {
+  background-color: var(--bg-elevated);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 3px,
+      rgba(24, 24, 27, 0.06) 3px,
+      rgba(24, 24, 27, 0.06) 4px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 3px,
+      rgba(24, 24, 27, 0.06) 3px,
+      rgba(24, 24, 27, 0.06) 4px
+    );
+}

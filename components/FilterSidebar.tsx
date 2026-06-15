@@ -13,9 +13,9 @@ const FilterSidebar: React.FC<Props> = ({ filters, setFilters }) => {
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-none p-6 space-y-8">
+    <div className="bg-[var(--bg-panel)] border border-[var(--border)]  p-6 space-y-8">
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center gap-2">
+        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-4 flex items-center gap-2">
           Search
         </h3>
         <div className="relative">
@@ -24,13 +24,13 @@ const FilterSidebar: React.FC<Props> = ({ filters, setFilters }) => {
             placeholder="Title, outlet, notes..."
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="w-full bg-black border border-zinc-800 rounded-none px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-[var(--bg-elevated)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--accent)] transition-colors"
           />
         </div>
       </div>
 
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center gap-2">
+        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-4 flex items-center gap-2">
           Stance
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -38,10 +38,10 @@ const FilterSidebar: React.FC<Props> = ({ filters, setFilters }) => {
             <button
               key={s}
               onClick={() => updateFilter('stance', s)}
-              className={`px-4 py-1.5 rounded-none text-xs font-semibold border transition-all ${
+              className={`px-4 py-1.5  text-xs font-semibold border transition-all ${
                 filters.stance === s 
-                  ? 'bg-red-500/10 border-red-500 text-red-500' 
-                  : 'bg-black border-zinc-800 text-zinc-400 hover:border-zinc-700'
+                  ? 'bg-[var(--accent)]/10 border-[var(--accent)] text-[var(--accent)]' 
+                  : 'bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]'
               }`}
             >
               {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -51,19 +51,21 @@ const FilterSidebar: React.FC<Props> = ({ filters, setFilters }) => {
       </div>
 
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center gap-2">
+        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-4 flex items-center gap-2">
           Actor Type
         </h3>
         <select
           value={filters.actorType}
           onChange={(e) => updateFilter('actorType', e.target.value)}
-          className="w-full bg-black border border-zinc-800 rounded-none px-4 py-2.5 text-sm appearance-none focus:outline-none focus:border-red-500"
+          className="w-full bg-[var(--bg-elevated)] border border-[var(--border)] rounded-lg px-4 py-2.5 text-sm appearance-none focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="all">All Actors</option>
           <option value="OSINT / research agency">OSINT / Research</option>
           <option value="NGO / human rights">NGO / Human Rights</option>
           <option value="Newsroom / media">Newsroom / Media</option>
           <option value="State actor / intelligence">State / Intel</option>
+          <option value="Collective / community OSINT">Collective OSINT</option>
+          <option value="Independent researcher">Independent Researcher</option>
         </select>
       </div>
     </div>

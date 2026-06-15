@@ -6,13 +6,13 @@ import MediaPipeline from './components/MediaPipeline';
 import FilterSidebar from './components/FilterSidebar';
 import InvestigationCard from './components/InvestigationCard';
 import TaxonomyView from './components/TaxonomyView';
-import MethodologyNetwork from './components/MethodologyNetwork';
+import EvidenceLogicFlow from './components/EvidenceLogicFlow';
 import TimeMap from './components/TimeMap';
 import Timeline from './components/Timeline';
 import ForensicComparison from './components/ForensicComparison';
 import ForensicIndex from './components/ForensicIndex';
 import NodeIngestor from './components/NodeIngestor';
-import { Network, BarChart3, Clock, Map as MapIcon, Layers, Plus } from 'lucide-react';
+import { GitBranch, BarChart3, Clock, Map as MapIcon, Layers, Plus } from 'lucide-react';
 
 const App: React.FC = () => {
   const [investigations, setInvestigations] = useState<Investigation[]>(initialInvestigations);
@@ -28,7 +28,7 @@ const App: React.FC = () => {
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
   const [isIngesting, setIsIngesting] = useState(false);
   
-  const [currentDate, setCurrentDate] = useState<Date>(new Date('2024-03-01'));
+  const [currentDate] = useState<Date>(() => new Date());
 
   const filteredInvestigations = useMemo(() => {
     return investigations.filter((inv) => {
@@ -68,43 +68,43 @@ const App: React.FC = () => {
   const invB = comparisonIds[1] ? investigations.find(i => i.id === comparisonIds[1]) || null : null;
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-red-500/30 bg-[#09090b] text-zinc-100">
-      <header className="sticky top-0 z-[60] bg-[#09090b]/95 backdrop-blur-xl border-b border-zinc-800 px-8 py-5 flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-black tracking-tighter text-white uppercase flex items-center gap-3">
-            <span className="text-red-500">AL AHLI</span> Investigation Comparison
-          </h1>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold mt-1">
-            Comparative Epistemology — Gaza Health Sector
-          </p>
+    <div className="app-shell min-h-screen flex flex-col font-sans selection:bg-[var(--accent)]/30 bg-[var(--bg)] text-[var(--text)] overflow-x-hidden">
+      <header className="w-full min-w-0 z-[60] bg-[var(--bg)]/95 backdrop-blur-xl border-b border-[var(--border)] px-4 sm:px-6 lg:px-8 pt-3 pb-5">
+        <div className="file-meta flex items-center justify-between gap-3 pb-3 mb-3 border-b border-dashed border-[var(--border)]">
+          <span>Case File No. 17-10-2023</span>
+          <span className="hidden sm:inline">Comparative Epistemology — Gaza Health Sector</span>
+          <span>Folio 01 / Unverified</span>
         </div>
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-            <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
-              Live Analysis Mode
-            </span>
+        <div className="flex flex-wrap justify-between items-end gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="file-meta mb-1">Dossier — Al-Ahli Hospital</p>
+            <h1 className="font-serif-display text-2xl sm:text-4xl leading-[0.95] text-[var(--text)] flex flex-wrap items-baseline gap-x-3">
+              <span style={{ color: 'var(--accent)' }} className="italic">Al-Ahli</span>
+              <span className="font-medium">Investigation Comparison</span>
+            </h1>
           </div>
-          <button 
-            onClick={() => setIsIngesting(true)}
-            className="flex items-center gap-2 text-[9px] font-black px-5 py-2.5 bg-red-600 hover:bg-red-700 transition-colors border border-red-500 text-white uppercase tracking-widest shadow-lg shadow-red-500/20"
-          >
-            <Plus size={14} /> Stabilize New Node
-          </button>
-          <button 
-            onClick={resetFilters}
-            className="text-[9px] font-black px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 transition-colors border border-zinc-700 text-zinc-300 uppercase tracking-widest"
-          >
-            Reset Workspace
-          </button>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+            <button 
+              onClick={() => setIsIngesting(true)}
+              className="thesis-btn-primary flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5"
+            >
+              <Plus size={14} /> <span className="hidden sm:inline">Add source</span><span className="sm:hidden">Add</span>
+            </button>
+            <button 
+              onClick={resetFilters}
+              className="thesis-btn-secondary px-3 sm:px-5 py-2 sm:py-2.5"
+            >
+              Reset
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="flex-1 p-6 space-y-16 max-w-[1800px] mx-auto w-full pb-32">
+      <main className="app-main flex-1 p-4 sm:p-6 space-y-16 w-full mx-auto pb-32">
         
         {/* 1. SPATIO-TEMPORAL MAP + FORENSIC INDEX (FIRST) */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[750px]">
-          <div className="lg:col-span-3 h-full">
+        <section className="hero-grid lg:h-[750px]">
+          <div className="min-w-0 h-[420px] lg:h-[750px]">
             <ForensicIndex 
               investigations={filteredInvestigations}
               selectedId={highlightedId}
@@ -112,13 +112,13 @@ const App: React.FC = () => {
               onCompare={setComparisonIds}
             />
           </div>
-          <div className="lg:col-span-9 relative group h-full">
-            <div className="absolute top-6 left-10 z-[10] pointer-events-none">
-              <div className="bg-black/80 backdrop-blur-md border border-zinc-800 p-4 shadow-2xl flex items-center gap-4">
-                <MapIcon size={16} className="text-red-500" />
+          <div className="min-w-0 relative group h-full">
+            <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-[10] pointer-events-none">
+              <div className="bg-[var(--bg-panel)]/90 backdrop-blur-md border border-[var(--border)] rounded-xl p-4 shadow-lg flex items-center gap-4">
+                <MapIcon size={16} className="text-[var(--accent)]" />
                 <div>
-                  <div className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Spatial Registry</div>
-                  <div className="text-[10px] font-bold text-white uppercase">{currentDate.toISOString().split('T')[0]}</div>
+                  <div className="text-[8px] font-black text-[var(--text-muted)] uppercase tracking-widest">Spatial Registry</div>
+                  <div className="text-[10px] font-bold text-[var(--text)] uppercase">{currentDate.toISOString().split('T')[0]}</div>
                 </div>
               </div>
             </div>
@@ -131,10 +131,16 @@ const App: React.FC = () => {
         </section>
 
         {/* 2. TRACE EVIDENCE PIPELINE */}
-        <section className="bg-zinc-950 border border-zinc-800 p-8 shadow-2xl">
-           <div className="flex items-center gap-3 text-red-500 mb-8 border-l-2 border-red-500 pl-4">
-              <Layers size={20} />
-              <h2 className="text-[11px] font-black uppercase tracking-[0.4em]">Trace Evidence Pipeline</h2>
+        <section className="panel-section feature-section tint-amber p-4 sm:p-6 lg:p-8">
+           <div className="file-header">
+              <div className="flex items-end gap-3">
+                 <span className="file-tab">01</span>
+                 <div>
+                    <p className="file-meta section-accent-text flex items-center gap-2"><Layers size={13} /> Exhibit · Trace evidence</p>
+                    <h2 className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--text)] leading-tight">Trace Evidence Pipeline</h2>
+                 </div>
+              </div>
+              <div className="file-meta text-right shrink-0">Al-Ahli / Trace<br/>p.01</div>
            </div>
           <MediaPipeline 
             investigations={filteredInvestigations} 
@@ -144,10 +150,16 @@ const App: React.FC = () => {
         </section>
 
         {/* 3. TIMELINE */}
-        <section className="bg-zinc-950 border border-zinc-800 p-8 shadow-xl overflow-hidden relative">
-          <div className="mb-8 flex items-center gap-4">
-            <Clock size={18} className="text-zinc-500" />
-            <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-white">Investigation Chronology</h2>
+        <section className="panel-section feature-section tint-blue p-4 sm:p-6 lg:p-8 relative">
+          <div className="file-header">
+            <div className="flex items-end gap-3">
+              <span className="file-tab">02</span>
+              <div>
+                <p className="file-meta section-accent-text flex items-center gap-2"><Clock size={13} /> Chronology · Logged entries</p>
+                <h2 className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--text)] leading-tight">Investigation Chronology</h2>
+              </div>
+            </div>
+            <div className="file-meta text-right shrink-0">Al-Ahli / Time<br/>p.02</div>
           </div>
           <Timeline 
             investigations={filteredInvestigations} 
@@ -157,21 +169,28 @@ const App: React.FC = () => {
         </section>
 
         {/* 4. INVESTIGATION NODES (CARDS + FILTERS) */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start pt-12 border-t border-zinc-800">
-          <aside className="lg:sticky lg:top-32 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start pt-12 border-t border-[var(--border)] w-full min-w-0">
+          <aside className="lg:sticky lg:top-32 space-y-8 min-w-0">
             <FilterSidebar filters={filters} setFilters={setFilters} />
-            <div className="p-6 bg-red-600/5 border border-red-500/10 rounded-none">
-               <h3 className="text-[10px] font-black uppercase tracking-widest text-red-500 mb-3">Analytical Note</h3>
-               <p className="text-[11px] text-zinc-500 leading-relaxed font-medium">
-                 Interaction with any node here synchronizes the spatial and temporal planes above.
+            <div className="p-6 bg-[var(--bg-panel)] border border-[var(--border)] rounded-lg shadow-sm relative">
+               <span className="stamp text-[var(--accent)] absolute -top-3 right-4">Margin note</span>
+               <h3 className="file-meta text-[var(--text)] mb-3">Marginalia</h3>
+               <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed ruled-note pt-1" style={{ fontFamily: 'var(--font-serif)' }}>
+                 Selecting any entry cross-references it on the map and the chronology above.
                </p>
             </div>
           </aside>
 
-          <div className="lg:col-span-3 space-y-10">
-            <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
-              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-zinc-500">Investigation Nodes</h2>
-              <span className="text-[10px] text-zinc-600 font-mono">[{filteredInvestigations.length} ACTIVE]</span>
+          <div className="lg:col-span-3 space-y-10 min-w-0">
+            <div className="file-header !mb-0 pb-4">
+              <div className="flex items-end gap-3">
+                <span className="file-tab" style={{ ['--section-accent' as any]: 'var(--text)' }}>03</span>
+                <div>
+                  <p className="file-meta">Entries · Central questions &amp; attribution</p>
+                  <h2 className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--text)] leading-tight">Case Entries</h2>
+                </div>
+              </div>
+              <span className="file-meta shrink-0">{filteredInvestigations.length} filed</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-8">
@@ -188,41 +207,39 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* 5. METHODOLOGICAL CONNECTIVITY */}
-        <section className="bg-zinc-950 border border-zinc-800 p-10 shadow-2xl overflow-hidden relative group/network">
-          <div className="mb-10 flex items-center justify-between">
-            <div className="space-y-1">
-              <h2 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-4">
-                <Network className="text-red-500" /> Methodological Connectivity
-              </h2>
-              <p className="text-xs text-zinc-500 font-medium tracking-wide uppercase">Mapping protocol convergence between actors</p>
+        {/* 5. EVIDENCE LOGIC FLOW */}
+        <section className="feature-section tint-accent p-4 sm:p-6 lg:p-10 relative">
+          <div className="file-header">
+            <div className="flex items-end gap-3">
+              <span className="file-tab">04</span>
+              <div>
+                <p className="file-meta section-accent-text flex items-center gap-2"><GitBranch size={13} /> Reasoning · Evidence streams &amp; outcomes</p>
+                <h2 className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--text)] leading-tight">Evidence Logic</h2>
+              </div>
             </div>
+            <div className="file-meta text-right shrink-0">Al-Ahli / Logic<br/>p.04</div>
           </div>
-          <div className="h-[500px] bg-black/40 border border-zinc-900">
-             <MethodologyNetwork 
-              investigations={investigations} 
-              onSelect={setHighlightedId}
-              selectedId={highlightedId}
-             />
+          <div className="w-full min-w-0">
+            <EvidenceLogicFlow />
           </div>
         </section>
 
         {/* 6. SCIENTIFIC METHODS COMPARISON (TAXONOMY) */}
-        <section className="bg-zinc-950 border border-zinc-800 p-10 lg:p-16 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none uppercase font-black text-7xl tracking-tighter group-hover:opacity-10 transition-opacity">
-            Taxonomy
-          </div>
-          <div className="mb-16 space-y-2 relative z-10">
-            <div className="flex items-center gap-3 text-red-500 mb-2">
-               <BarChart3 size={24} />
-               <span className="text-[10px] font-black uppercase tracking-[0.5em]">Methods Table</span>
+        <section className="feature-section tint-violet p-4 sm:p-8 lg:p-12 relative group">
+          <div className="file-header">
+            <div className="flex items-end gap-3">
+              <span className="file-tab">05</span>
+              <div>
+                <p className="file-meta section-accent-text flex items-center gap-2"><BarChart3 size={13} /> Appendix · Methods table</p>
+                <h2 className="font-serif-display text-2xl sm:text-4xl font-medium text-[var(--text)] leading-tight">Scientific Methods Comparison</h2>
+              </div>
             </div>
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">Scientific Methods Comparison</h2>
-            <p className="text-sm text-zinc-500 max-w-2xl font-medium tracking-wide">
-              A detailed matrix comparing the evidentiary protocols utilized by Forensic Architecture, Bellingcat, and Human Rights Watch.
-            </p>
+            <div className="file-meta text-right shrink-0">Al-Ahli / Methods<br/>p.05</div>
           </div>
-          <TaxonomyView />
+          <p className="text-sm text-[var(--text-secondary)] max-w-2xl mb-8 sm:mb-12 -mt-2" style={{ fontFamily: 'var(--font-serif)' }}>
+            Comparative matrix of all ten Al-Ahli case studies mapped to conjecture-led, model-led, and hybrid epistemic paradigms.
+          </p>
+          <TaxonomyView investigations={investigations} />
         </section>
 
         {/* Dynamic Comparison Suite (Overlay-style) */}
@@ -241,8 +258,12 @@ const App: React.FC = () => {
         />
       )}
 
-      <footer className="p-12 border-t border-zinc-800 bg-black/50 text-center">
-        <p className="text-[10px] text-zinc-600 font-black uppercase tracking-[0.5em]">Independent Epistemic Workspace // Al Ahli Hospital</p>
+      <footer className="w-full px-6 sm:px-10 py-10 border-t border-[var(--border)] bg-[var(--bg-panel)]">
+        <div className="file-meta flex flex-wrap items-center justify-between gap-3 max-w-6xl mx-auto">
+          <span>Independent Epistemic Workspace</span>
+          <span className="hidden sm:inline">Al-Ahli Hospital · Gaza · Oct 17 2023</span>
+          <span>End of file — p.01</span>
+        </div>
       </footer>
     </div>
   );

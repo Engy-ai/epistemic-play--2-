@@ -1,7 +1,19 @@
 
-export type ActorType = 'OSINT / research agency' | 'NGO / human rights' | 'Newsroom / media' | 'State actor / intelligence' | 'Collective / community OSINT';
+export type ActorType = 'OSINT / research agency' | 'NGO / human rights' | 'Newsroom / media' | 'State actor / intelligence' | 'Collective / community OSINT' | 'Independent researcher';
 export type MissionFocus = 'Human rights & accountability' | 'Independent journalism' | 'State security / military' | 'Open-source intelligence';
 export type Stance = 'Israeli munition' | 'Palestinian rocket' | 'Inconclusive / uncertain' | 'Supports IDF narrative' | 'Challenges IDF narrative';
+export type EpistemicParadigm = 'Conjecture-led' | 'Model-led' | 'Hybrid';
+
+export interface MethodProfile {
+  video: boolean;
+  satellite: boolean;
+  crater: boolean;
+  audio: boolean;
+  modelling3d: boolean;
+  trajectory: boolean;
+  triangulation: boolean;
+  computational: boolean;
+}
 
 export interface MediaItem {
   kind: 'image' | 'video';
@@ -32,6 +44,9 @@ export interface Investigation {
   // Epistemic Metadata
   primaryEpistemicObject: string;
   outcomeForm: string;
+  epistemicParadigm: EpistemicParadigm;
+  centralQuestion: string;
+  methodProfile: MethodProfile;
   location?: {
     lat: number;
     lng: number;

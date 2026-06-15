@@ -49,7 +49,7 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
       attributionControl: false 
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { 
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { 
       maxZoom: 20 
     }).addTo(map);
 
@@ -57,7 +57,7 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
     regionRef.current = L.layerGroup().addTo(map);
 
     L.polygon(gazaStripCoords, { 
-      color: '#ef4444', 
+      color: 'var(--accent)', 
       weight: 1, 
       dashArray: '5, 10', 
       fillOpacity: 0.03, 
@@ -84,6 +84,13 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!mapContainerRef.current || !mapRef.current) return;
+    const observer = new ResizeObserver(() => mapRef.current?.invalidateSize());
+    observer.observe(mapContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   // Sync Markers with Filtered Data and Time
   useEffect(() => {
     if (!mapRef.current) return;
@@ -108,14 +115,14 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
         const isActive = inv.id === selectedId;
         const html = `
           <div class="investigation-marker-wrapper relative group">
-            <div class="marker-inner border-2 ${isActive ? 'active border-red-500 scale-125' : 'border-white/50 scale-100'} transition-all duration-300" 
-                 style="width: ${isActive ? '68px' : '56px'}; height: ${isActive ? '68px' : '56px'}; border-radius: 0px; background: black;">
+            <div class="marker-inner border-2 ${isActive ? 'active border-[var(--accent)] scale-125' : 'border-[var(--border-strong)] scale-100'} transition-all duration-300" 
+                 style="width: ${isActive ? '68px' : '56px'}; height: ${isActive ? '68px' : '56px'}; border-radius: 18px; background: var(--bg-elevated);">
               <img src="${inv.media[0]?.url || ''}" class="w-full h-full object-cover" />
-              <div class="absolute bottom-0 inset-x-0 bg-red-600 text-[7px] font-black text-white text-center py-1 uppercase tracking-tighter">${inv.outlet.split(' ')[0]}</div>
+              <div class="absolute bottom-0 inset-x-0 text-[7px] font-black text-white text-center py-1 uppercase tracking-tighter" style="background:#e2574f">${inv.outlet.split(' ')[0]}</div>
             </div>
-            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-black border border-zinc-800 pointer-events-none ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'} transition-all duration-300 whitespace-nowrap z-[3000]">
-               <div class="text-[7px] font-black text-red-500 uppercase tracking-[0.2em] mb-0.5">Inquiry Focus</div>
-               <div class="text-[9px] font-black text-white uppercase tracking-tighter">${inv.primaryEpistemicObject}</div>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-[var(--bg-panel)] border border-[var(--border)] rounded-lg shadow-md pointer-events-none ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'} transition-all duration-300 whitespace-nowrap z-[3000]">
+               <div class="text-[7px] font-black text-[var(--accent)] uppercase tracking-[0.2em] mb-0.5">Inquiry Focus</div>
+               <div class="text-[9px] font-black text-[var(--text)] uppercase tracking-tighter">${inv.primaryEpistemicObject}</div>
             </div>
           </div>
         `;
@@ -157,18 +164,20 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
       const nodeClasses = [
         "facility-node",
         "relative",
+        "flex",
+        "items-center",
+        "justify-center",
         "w-8",
         "h-8",
-        isActive ? 'ring-2 ring-white scale-110 z-[4000]' : '',
-        hasBeenHit ? 'bg-red-600 border-red-400 text-white' : 'bg-zinc-900 border-zinc-800 text-zinc-600'
+        isActive ? 'ring-2 ring-[var(--accent)] scale-110 z-[4000]' : '',
+        hasBeenHit ? 'bg-[var(--bg-panel)] border-[var(--accent)] text-[var(--accent)]' : 'bg-[var(--bg-panel)] border-[var(--border)] text-[var(--text-dim)]'
       ].join(' ');
 
-      const iconColor = hasBeenHit ? 'white' : 'currentColor';
-      const borderBottom = hasBeenHit ? 'border-b-2 border-white/50' : 'border-b-2 border-red-500/30';
+      const iconColor = 'currentColor';
 
       const markerHtml = `
-        <div class="${nodeClasses}" style="${borderBottom}; border-radius: 0px; transition: all 0.5s ease;">
-          ${isCurrentlyHit ? '<div class="event-ping" style="border-radius: 0px;"></div>' : ''}
+        <div class="${nodeClasses}" style="border-radius: 9999px; transition: all 0.5s ease;">
+          ${isCurrentlyHit ? '<div class="event-ping" style="border-radius: 9999px;"></div>' : ''}
           <svg viewBox="0 0 24 24" class="w-5 h-5" fill="${iconColor}">
             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/>
           </svg>
@@ -216,69 +225,69 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
   }, [isPlaying, endDate]);
 
   return (
-    <div className="flex flex-col h-[750px] w-full bg-black rounded-none overflow-hidden border border-zinc-800 shadow-2xl relative">
-      <div className="flex-1 relative">
+    <div className="flex flex-col h-[750px] w-full max-w-full min-w-0 bg-[var(--bg-elevated)] rounded-2xl overflow-hidden border border-[var(--border)] shadow-sm relative">
+      <div className="flex-1 min-h-0 relative">
         <div ref={mapContainerRef} className="absolute inset-0 z-0" />
         
-        <div className="absolute top-6 left-6 z-[1000] pointer-events-none space-y-4 w-96">
-           <div className="bg-zinc-950/90 backdrop-blur-2xl border border-zinc-800 p-6 rounded-none shadow-2xl pointer-events-auto">
+        <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-[1000] pointer-events-none space-y-3 sm:space-y-4 w-[min(24rem,calc(100%-1.5rem))] max-w-full">
+           <div className="bg-[var(--bg-panel)] backdrop-blur-2xl border border-[var(--border)] p-4 sm:p-6  shadow-2xl pointer-events-auto">
               <div className="flex justify-between items-center mb-4">
-                 <h3 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 flex items-center gap-2"><Globe size={14} className="text-red-500" /> Palestine</h3>
-                 <span className="text-[10px] font-mono text-zinc-500 bg-black/50 px-2 py-1 rounded-none">{currentDate.toLocaleDateString('en-GB')}</span>
+                 <h3 className="text-[11px] font-black uppercase tracking-widest text-[var(--text-secondary)] flex items-center gap-2"><Globe size={14} className="text-[var(--accent)]" /> Palestine</h3>
+                 <span className="text-[10px] font-mono text-[var(--text-muted)] bg-[var(--bg-elevated)] rounded px-2 py-1 ">{currentDate.toLocaleDateString('en-GB')}</span>
               </div>
-              <div className="h-1.5 bg-zinc-900 rounded-none overflow-hidden">
-                <div className="h-full bg-red-600 transition-all duration-700" style={{ width: `${(currentDate.getTime() - startDate.getTime()) / (endDate.getTime() - startDate.getTime()) * 100}%` }} />
+              <div className="h-1.5 bg-[var(--bg-panel)]  overflow-hidden">
+                <div className="h-full bg-[var(--accent)] transition-all duration-700" style={{ width: `${(currentDate.getTime() - startDate.getTime()) / (endDate.getTime() - startDate.getTime()) * 100}%` }} />
               </div>
            </div>
 
            {selectedInvestigation && (
-             <div className="bg-zinc-950/95 border border-red-500/40 rounded-none shadow-2xl animate-in pointer-events-auto overflow-hidden flex flex-col">
+             <div className="bg-[var(--bg-panel)] border border-[var(--accent)]  shadow-2xl animate-in pointer-events-auto overflow-hidden flex flex-col">
                 {/* Image Gallery in Map Card */}
                 {selectedInvestigation.media.length > 0 && (
-                  <div className="h-48 relative bg-black group/media">
+                  <div className="h-32 sm:h-40 lg:h-48 relative bg-black group/media">
                     <img 
                       src={selectedInvestigation.media[activeImageIndex].url} 
                       className="w-full h-full object-cover opacity-80" 
                       alt="Investigation trace"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-transparent to-transparent" />
                     <div className="absolute bottom-4 left-4 flex gap-2">
                        {selectedInvestigation.media.map((_, i) => (
-                         <div key={i} className={`w-1.5 h-1.5 rounded-none ${i === activeImageIndex ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,1)]' : 'bg-zinc-700'}`} />
+                         <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === activeImageIndex ? 'bg-[var(--accent)]' : 'bg-[var(--border-strong)]'}`} style={i === activeImageIndex ? { boxShadow: '0 0 8px var(--accent-glow)' } : {}} />
                        ))}
                     </div>
                     {selectedInvestigation.media.length > 1 && (
                       <div className="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover/media:opacity-100 transition-opacity">
-                         <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => (prev - 1 + selectedInvestigation.media.length) % selectedInvestigation.media.length); }} className="p-2 bg-black/60 border border-white/10 text-white"><ChevronLeft size={16} /></button>
-                         <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => (prev + 1) % selectedInvestigation.media.length); }} className="p-2 bg-black/60 border border-white/10 text-white"><ChevronRight size={16} /></button>
+                         <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => (prev - 1 + selectedInvestigation.media.length) % selectedInvestigation.media.length); }} className="p-1 bg-black/50 border border-white/10 text-white rounded-full"><ChevronLeft size={12} /></button>
+                         <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => (prev + 1) % selectedInvestigation.media.length); }} className="p-1 bg-black/50 border border-white/10 text-white rounded-full"><ChevronRight size={12} /></button>
                       </div>
                     )}
                   </div>
                 )}
                 
-                <div className="p-6 pt-2">
+                <div className="p-4 sm:p-6 pt-2">
                   <div className="flex items-center gap-2 mb-4">
-                     <div className="p-1.5 bg-red-600/10 border border-red-500/30">
-                        <Zap size={12} className="text-red-500" />
+                     <div className="p-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]">
+                        <Zap size={12} className="text-[var(--accent)]" />
                      </div>
                      <div className="flex flex-col">
-                        <span className="text-[8px] font-black uppercase text-red-500 tracking-[0.2em]">Inquiry Focus</span>
-                        <h4 className="text-[11px] font-black text-white uppercase tracking-tighter leading-tight">
+                        <span className="text-[8px] font-black uppercase text-[var(--accent)] tracking-[0.2em]">Inquiry Focus</span>
+                        <h4 className="text-[11px] font-black text-[var(--text)] uppercase tracking-tighter leading-tight">
                            {selectedInvestigation.primaryEpistemicObject}
                         </h4>
                      </div>
                   </div>
 
                   <div className="mb-4">
-                    <h3 className="text-sm font-black text-white uppercase tracking-tight">{selectedInvestigation.outlet}</h3>
-                    <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Forensic Registry Node</p>
+                    <h3 className="text-sm font-black text-[var(--text)] uppercase tracking-tight">{selectedInvestigation.outlet}</h3>
+                    <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mt-1">Forensic Registry Node</p>
                   </div>
 
-                  <div className="bg-black/40 p-4 rounded-none border border-white/5 mb-4">
-                    <div className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <div className="bg-[var(--bg-elevated)] p-4 rounded-lg border border-[var(--border)] mb-4">
+                    <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-2 flex items-center gap-2">
                        <ShieldAlert size={10} /> Evidentiary Claim
                     </div>
-                    <p className="text-[10px] text-zinc-300 font-medium italic leading-relaxed">
+                    <p className="text-[10px] text-[var(--text-secondary)] font-medium italic leading-relaxed">
                       "{selectedInvestigation.stanceShort}"
                     </p>
                   </div>
@@ -286,11 +295,11 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
                        <div className="flex flex-col">
-                          <span className="text-[7px] font-black text-zinc-600 uppercase">Methods</span>
-                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-tighter">{selectedInvestigation.methodology[0]}, {selectedInvestigation.methodology[1]}</span>
+                          <span className="text-[7px] font-black text-[var(--text-dim)] uppercase">Methods</span>
+                          <span className="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-tighter">{selectedInvestigation.methodology[0]}, {selectedInvestigation.methodology[1]}</span>
                        </div>
                     </div>
-                    <button className="text-[9px] font-black uppercase tracking-widest text-red-500 hover:text-red-400 flex items-center gap-2 border-b border-red-500/20 pb-0.5">
+                    <button className="text-[9px] font-black uppercase tracking-widest text-[var(--accent)] hover:text-[var(--accent)] flex items-center gap-2 border-b border-[var(--accent)] pb-0.5">
                        View Repo <ArrowUpRight size={10} />
                     </button>
                   </div>
@@ -299,13 +308,13 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
            )}
 
            {activeFacility && (
-             <div className="bg-zinc-950/95 border border-zinc-700 p-6 rounded-none shadow-2xl animate-in pointer-events-auto">
-                <h4 className="text-sm font-black text-white mb-2">{activeFacility.name}</h4>
+             <div className="bg-[var(--bg-panel)] border border-[var(--border-strong)] p-6  shadow-2xl animate-in pointer-events-auto">
+                <h4 className="text-sm font-black text-[var(--text)] mb-2">{activeFacility.name}</h4>
                 <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                    {activeFacility.incidents.filter(i => new Date(i.date) <= currentDate).reverse().map((inc, idx) => (
-                     <div key={idx} className="relative pl-5 border-l-2 border-zinc-800 pb-4">
-                        <div className="absolute -left-[7px] top-1 w-3 h-3 bg-red-500 border-2 border-zinc-950"></div>
-                        <p className="text-[11px] text-zinc-300 font-bold">{inc.description}</p>
+                     <div key={idx} className="relative pl-5 border-l-2 border-[var(--border)] pb-4">
+                        <div className="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-[var(--accent)] border-2 border-[var(--bg)]"></div>
+                        <p className="text-[11px] text-[var(--text-secondary)] font-bold">{inc.description}</p>
                      </div>
                    ))}
                 </div>
@@ -313,19 +322,19 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
            )}
         </div>
 
-        <div className="absolute bottom-6 right-6 z-[1000] flex flex-col gap-3 pointer-events-auto">
-           <button onClick={() => mapRef.current?.zoomIn()} className="p-4 bg-zinc-950/90 border border-zinc-800 rounded-none text-zinc-400 shadow-xl"><ZoomIn size={18} /></button>
-           <button onClick={() => mapRef.current?.setView([31.5049, 34.4514], 15)} className="p-4 bg-zinc-950/90 border border-zinc-800 rounded-none text-zinc-400 shadow-xl"><Crosshair size={18} /></button>
+        <div className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 z-[1000] flex flex-col gap-2 sm:gap-3 pointer-events-auto">
+           <button onClick={() => mapRef.current?.zoomIn()} className="p-2.5 sm:p-4 bg-[var(--bg-panel)] border border-[var(--border)]  text-[var(--text-secondary)] shadow-xl"><ZoomIn size={18} /></button>
+           <button onClick={() => mapRef.current?.setView([31.5049, 34.4514], 15)} className="p-2.5 sm:p-4 bg-[var(--bg-panel)] border border-[var(--border)]  text-[var(--text-secondary)] shadow-xl"><Crosshair size={18} /></button>
         </div>
       </div>
 
-      <div className="h-44 bg-zinc-950 border-t border-zinc-900 p-8 flex flex-col justify-center pointer-events-auto">
-        <div className="flex items-center gap-8">
-           <button onClick={() => setIsPlaying(!isPlaying)} className="w-16 h-16 bg-red-500 text-white rounded-none flex items-center justify-center shadow-2xl transition-all">
-             {isPlaying ? <Pause size={32} /> : <Play size={32} className="ml-1" />}
+      <div className="flex-shrink-0 h-24 sm:h-32 lg:h-36 bg-[var(--bg-panel)] border-t border-[var(--border)] px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex flex-col justify-center pointer-events-auto">
+        <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+           <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex-shrink-0 bg-[var(--accent)] text-white  flex items-center justify-center shadow-2xl transition-all">
+             {isPlaying ? <Pause size={24} className="sm:w-8 sm:h-8" /> : <Play size={24} className="ml-0.5 sm:w-8 sm:h-8" />}
            </button>
            <div className="flex-1">
-              <input type="range" min={startDate.getTime()} max={endDate.getTime()} value={currentDate.getTime()} onChange={(e) => setCurrentDate(new Date(parseInt(e.target.value)))} className="w-full h-2 bg-zinc-900 rounded-none appearance-none cursor-pointer accent-red-500" />
+              <input type="range" min={startDate.getTime()} max={endDate.getTime()} value={currentDate.getTime()} onChange={(e) => setCurrentDate(new Date(parseInt(e.target.value)))} className="w-full h-2 bg-[var(--bg-elevated)]  appearance-none cursor-pointer accent-[var(--accent)]" />
            </div>
         </div>
       </div>

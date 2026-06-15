@@ -5,7 +5,7 @@ export const investigations: Investigation[] = [
   {
     id: "fa",
     title: "Al-Ahli Hospital Explosion – Acoustic & Spatial Reconstruction",
-    outlet: "Forensic Architecture + Earshot",
+    outlet: "Forensic Architecture",
     actorType: "OSINT / research agency",
     mission: ["Human rights & accountability", "Open-source intelligence"],
     stance: ["Challenges IDF narrative", "Israeli munition"],
@@ -14,7 +14,7 @@ export const investigations: Investigation[] = [
     country: "UK",
     methodology: ["Video geolocation", "3D modelling / simulation", "Audio / acoustic analysis", "Trajectory reconstruction"],
     dataInputs: ["Social media videos", "TV footage", "Open satellite imagery", "User-generated audio"],
-    keyFindings: "Reconstructs projectile trajectory and timing using synchronized videos and audio; concludes the blast was consistent with an Israeli artillery shell fired from the east, not a misfired Palestinian rocket.",
+    keyFindings: "Uses 3D camera tracking and trajectory triangulation on the Al Jazeera balcony video and Tel Aviv footage to show the mid-air intercept could not have caused the hospital blast; later work tracks Hamas rocket volleys and incorporates situated testimony from Dr. Ghassan Abu-Sittah.",
     links: [
       { label: "FA case page", url: "https://forensic-architecture.org/investigation/al-ahli-al-maamadani-hospital" },
       { label: "FA: Israeli Disinformation", url: "https://forensic-architecture.org/investigation/israeli-disinformation-al-ahli-hospital" },
@@ -28,6 +28,9 @@ export const investigations: Investigation[] = [
     ],
     primaryEpistemicObject: "Trajectory & temporal synchronization",
     outcomeForm: "Forensic model-based reconstruction",
+    epistemicParadigm: "Model-led",
+    centralQuestion: "Could the Hamas/Islamic Jihad intercepted missile shown in the Al Jazeera footage be the cause of the incident?",
+    methodProfile: { video: true, satellite: true, crater: true, audio: true, modelling3d: true, trajectory: true, triangulation: true, computational: true },
     location: { lat: 31.5049, lng: 34.4514, label: "Hospital Courtyard" },
     vector: { origin: [31.5040, 34.4850], angle: 270, magnitude: 0.003 }
   },
@@ -48,6 +51,9 @@ export const investigations: Investigation[] = [
     media: [{ kind: "image", label: "Al-Ahli grounds aerial with crater", url: "https://www.hrw.org/sites/default/files/styles/modal/public/media_2023/11/202311mena_gaza_hospital_crater.jpg" }],
     primaryEpistemicObject: "Crater morphology & material damage",
     outcomeForm: "NGO technical report",
+    epistemicParadigm: "Conjecture-led",
+    centralQuestion: "What does the physical damage at the site tell us about the munition that caused it?",
+    methodProfile: { video: true, satellite: true, crater: true, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.50495, lng: 34.45142, label: "Parking Lot" }
   },
   {
@@ -67,6 +73,9 @@ export const investigations: Investigation[] = [
     media: [{ kind: "image", label: "NYT explainer video Still", url: "https://static01.nyt.com/images/2023/11/03/multimedia/03themorning-hospital1-jfbv/03themorning-hospital1-jfbv-superJumbo.jpg?quality=75&auto=webp" }],
     primaryEpistemicObject: "Visual timeline alignment & ballistic review",
     outcomeForm: "Interactive visual narrative",
+    epistemicParadigm: "Conjecture-led",
+    centralQuestion: "Does the visual and physical evidence better match an Israeli airstrike or a misfired rocket?",
+    methodProfile: { video: true, satellite: true, crater: true, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.5050, lng: 34.4515, label: "Impact Site" }
   },
   {
@@ -86,6 +95,9 @@ export const investigations: Investigation[] = [
     media: [{ kind: "image", label: "Trajectory visuals from WaPo", url: "https://gfx-data.news-engineering.aws.wapo.pub/ai2html/overheadview/APVFAR36QJFCPMGIALWA62RQPI/POV_MAP_AJ-xlarge.jpg?v=2" }],
     primaryEpistemicObject: "Video trace re-analysis",
     outcomeForm: "Investigative feature",
+    epistemicParadigm: "Conjecture-led",
+    centralQuestion: "Is the IDF's key piece of video evidence what they claim it is?",
+    methodProfile: { video: true, satellite: false, crater: true, audio: false, modelling3d: false, trajectory: true, triangulation: true, computational: false },
     location: { lat: 31.5052, lng: 34.4510, label: "WaPo Analysis Area" }
   },
   {
@@ -105,6 +117,9 @@ export const investigations: Investigation[] = [
     media: [{ kind: "image", label: "BBC Verify composite still", url: "https://ichef.bbci.co.uk/news/1536/cpsprodpb/12ABC/production/_131467467_crater12-nc.png.webp" }],
     primaryEpistemicObject: "Multi-modal verification suite",
     outcomeForm: "Verification summary",
+    epistemicParadigm: "Conjecture-led",
+    centralQuestion: "Can available audio-visual evidence establish when and from where the projectile was launched with sufficient precision to support an attribution?",
+    methodProfile: { video: true, satellite: false, crater: true, audio: true, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.5049, lng: 34.4514, label: "BBC Analysis Site" }
   },
   {
@@ -124,6 +139,9 @@ export const investigations: Investigation[] = [
     media: [{ kind: "image", label: "IDF Before/After Imagery", url: "https://www.idf.il/media/okpnsic3/before-and-after.jpeg" }],
     primaryEpistemicObject: "Military intelligence construct",
     outcomeForm: "Operational briefing",
+    epistemicParadigm: "Conjecture-led",
+    centralQuestion: "Can military intelligence data establish the origin point and identity of the projectile?",
+    methodProfile: { video: false, satellite: false, crater: false, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.5055, lng: 34.4518, label: "IDF Plot" }
   },
   {
@@ -133,7 +151,7 @@ export const investigations: Investigation[] = [
     actorType: "Collective / community OSINT",
     mission: ["Open-source intelligence", "Independent journalism"],
     stance: ["Inconclusive / uncertain"],
-    stanceShort: "Analyses imagery to identify a likely crater and constrain munition possibilities.",
+    stanceShort: "Maintains insufficient evidence to reach a conclusion; maps the crater without endorsing either attribution.",
     publicationDate: "2023-10-18",
     country: "Networked / transnational",
     methodology: ["Satellite imagery", "Video geolocation", "Shadow analysis / timing"],
@@ -143,7 +161,90 @@ export const investigations: Investigation[] = [
     media: [{ kind: "image", label: "Bellingcat annotated crater", url: "https://www.bellingcat.com/app/uploads/2023/10/unnamed-2.png" }],
     primaryEpistemicObject: "Trace correlation & site constraining",
     outcomeForm: "Open-source collective analysis",
+    epistemicParadigm: "Conjecture-led",
+    centralQuestion: "What does the crater tell us about what caused it, and what range of munitions is consistent with its physical characteristics?",
+    methodProfile: { video: true, satellite: true, crater: true, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.50495, lng: 34.45145, label: "Crater Location" }
+  },
+  {
+    id: "earshot",
+    title: "Al-Ahli Hospital Blast – Doppler Trajectory Analysis",
+    outlet: "Earshot",
+    actorType: "OSINT / research agency",
+    mission: ["Open-source intelligence", "Human rights & accountability"],
+    stance: ["Challenges IDF narrative", "Israeli munition"],
+    stanceShort: "Doppler analysis of two balcony-era recordings indicates the munition approached from the northeast or east, not the southwest as the IDF claimed; also showed the intercepted militant audio was edited.",
+    publicationDate: "2023-10-20",
+    country: "UK",
+    methodology: ["Audio / acoustic analysis", "Doppler effect mapping", "Spectrogram analysis", "Trajectory reconstruction"],
+    dataInputs: ["Balcony video (150m southeast of hospital)", "Northwest receiver video (1500m from site)", "IDF southwest launch claims", "Intercepted audio recording"],
+    keyFindings: "Translates balcony and northwest audio into Doppler curves; the southeast receiver shows the emitter first approaching then receding, inconsistent with a southwest launch. Presented via Channel 4 with Forensic Architecture and Al-Haq.",
+    links: [
+      { label: "Channel 4 report", url: "https://www.channel4.com/news/human-rights-investigators-raise-new-questions-on-gaza-hospital-explosion" },
+      { label: "Who was behind the Gaza hospital blast", url: "https://www.channel4.com/news/who-was-behind-the-gaza-hospital-blast-visual-investigation" }
+    ],
+    media: [
+      { kind: "image", label: "FA x Channel 4 — Doppler & crater analysis", url: "https://fa-public-assets.fra1.cdn.digitaloceanspaces.com/IsraeliDisinformation/GIF%204%20-%20Methodology%20-%20Panorama%20Paint.gif" }
+    ],
+    primaryEpistemicObject: "Doppler signature & audio provenance",
+    outcomeForm: "Acoustic forensic model",
+    epistemicParadigm: "Model-led",
+    centralQuestion: "From which direction did the missile arrive?",
+    methodProfile: { video: true, satellite: false, crater: false, audio: true, modelling3d: false, trajectory: true, triangulation: false, computational: true },
+    location: { lat: 31.5051, lng: 34.4520, label: "Doppler Receiver Sites" }
+  },
+  {
+    id: "kobs",
+    title: "Reverse Engineering the Projectile Trajectory from the Doppler Effect",
+    outlet: "Michael Kobs",
+    actorType: "Independent researcher",
+    mission: ["Open-source intelligence"],
+    stance: ["Israeli munition", "Challenges IDF narrative"],
+    stanceShort: "Computational Doppler modelling of the balcony video concludes the munition trajectory matches an Israeli fighter-jet firing angle, not a southwest rocket launch.",
+    publicationDate: "2024-04-08",
+    country: "Independent / transnational",
+    methodology: ["Doppler curve computational modelling", "3D triangulation", "Photogrammetry / photo-matching", "Trajectory reconstruction"],
+    dataInputs: ["Balcony video spectrogram", "Crater fragmentation angles", "FA/Earshot and IDF/HRW impact angle estimates", "Israeli aircraft position data"],
+    keyFindings: "Treats Doppler curve shape as frequency-independent, fits simulation peaks to the balcony recording, and discards non–fighter-jet hypotheses; supplements with Blender photo-matching of hospital grounds.",
+    links: [
+      { label: "Scribd technical report", url: "https://www.scribd.com/document/721217432/Reverse-Engineering-Al-Ahli-Hospital-Attack-En" }
+    ],
+    media: [
+      { kind: "image", label: "FA trajectory analysis reference", url: "https://content.forensic-architecture.org/wp-content/uploads/2024/02/Image-1-Rocket-Propellant-Analysis-2400x1350.jpg" }
+    ],
+    primaryEpistemicObject: "Computational Doppler curve simulation",
+    outcomeForm: "Independent technical report",
+    epistemicParadigm: "Model-led",
+    centralQuestion: "From what angle was the missile shot?",
+    methodProfile: { video: true, satellite: false, crater: false, audio: true, modelling3d: true, trajectory: true, triangulation: true, computational: true },
+    location: { lat: 31.5048, lng: 34.4522, label: "Balcony Video Axis" }
+  },
+  {
+    id: "maherarar",
+    title: "Doppler Shift Analysis — Al-Ahli Hospital Massacre (Part II)",
+    outlet: "Maher Arar Blog",
+    actorType: "Independent researcher",
+    mission: ["Open-source intelligence"],
+    stance: ["Israeli munition", "Challenges IDF narrative"],
+    stanceShort: "Expands Kobs's Doppler model to test GBU-39/GBU-53 munitions; simulations find GBU-39 compatible with the balcony signature while Palestinian rocket scenarios fail drag and speed constraints.",
+    publicationDate: "2024-04-23",
+    country: "Independent / transnational",
+    methodology: ["Computational modelling", "Doppler shift analysis", "Aircraft trajectory analysis", "Munition type simulation"],
+    dataInputs: ["Michael Kobs Doppler model", "Balcony video spectrogram", "GBU-39 / GBU-53 munition parameters", "CNN crater footage", "Aircraft altitude and speed estimates"],
+    keyFindings: "Inverts Kobs's model to hold trajectory constant and vary emitter frequency; multi-variable minimisation finds GBU-39 compatible with the Doppler curve within 10ms tolerance, while Hamas rocket misfire scenarios are incompatible with observed drag coefficients.",
+    links: [
+      { label: "Maher Arar Blog Part II", url: "https://ararmaher.wordpress.com/2024/04/23/doppler-shift-analysis-leaves-no-doubt-an-idf-aircraft-is-behind-the-al-ahli-hospital-massacre/" },
+      { label: "Maher Arar Blog Part I", url: "https://ararmaher.wordpress.com/" }
+    ],
+    media: [
+      { kind: "image", label: "Al-Ahli grounds aerial with crater", url: "https://www.hrw.org/sites/default/files/styles/modal/public/media_2023/11/202311mena_gaza_hospital_crater.jpg" }
+    ],
+    primaryEpistemicObject: "GBU-39 / GBU-53 munition compatibility",
+    outcomeForm: "Independent OSINT blog analysis",
+    epistemicParadigm: "Hybrid",
+    centralQuestion: "Can computer simulations reproduce the Doppler shift curve of the balcony video to test GBU-39 and GBU-53 munition compatibility?",
+    methodProfile: { video: true, satellite: false, crater: false, audio: true, modelling3d: false, trajectory: true, triangulation: false, computational: true },
+    location: { lat: 31.5047, lng: 34.4518, label: "GBU-39 Simulation Axis" }
   }
 ];
 

@@ -1,209 +1,167 @@
 
 import React from 'react';
+import { Investigation, EpistemicParadigm } from '../types';
 
-const taxonomyData = {
-  fa: {
-    name: "Forensic Architecture",
-    id: "FA",
-    description: "Multidisciplinary spatial and architectural reconstruction.",
-    color: "sky"
-  },
-  bc: {
-    name: "Bellingcat",
-    id: "BC",
-    description: "OSINT collective utilizing open-source social intelligence.",
-    color: "amber"
-  },
-  hrw: {
-    name: "Human Rights Watch",
-    id: "HRW",
-    description: "Legal and NGO documentation for international human rights standards.",
-    color: "rose"
-  }
-};
+interface Props {
+  investigations: Investigation[];
+}
 
-const categories = [
-  {
-    title: "Spatial & Sat-Relational Methods",
-    color: "text-sky-400",
-    bg: "bg-sky-400/5",
-    border: "border-sky-400/20",
-    methods: {
-      fa: [
-        "Architectural 3D modelling from UGC",
-        "Camera matching & photogrammetry",
-        "Satellite-to-ground trajectory mapping",
-        "Material behaviour & explosion simulation"
-      ],
-      bc: [
-        "Landmark-based satellite geolocation",
-        "Visual horizon/skyline matching",
-        "Military hardware and munition ID",
-        "Impact crater geometry analysis"
-      ],
-      hrw: [
-        "Incident geolocation across frames",
-        "Satellite-based damage assessment",
-        "Mapping of hospital grounds boundaries",
-        "Visual correlation with launch origins"
-      ]
-    }
-  },
-  {
-    title: "Temporal & Chronological Methods",
-    color: "text-amber-400",
-    bg: "bg-amber-400/5",
-    border: "border-amber-400/20",
-    methods: {
-      fa: [
-        "Audio-visual timeline synchronization",
-        "Projectile flight path timing (Earshot)",
-        "Shadow-based sun-path inference",
-        "Physics-based sequencing of events"
-      ],
-      bc: [
-        "Metadata and timestamp triangulation",
-        "Visual sequencing of livestream data",
-        "Matching TV broadcast timing",
-        "Chronological launch site verification"
-      ],
-      hrw: [
-        "Narrative timeline construction",
-        "Timestamp validation of witness media",
-        "Reviewing satellite revisit intervals",
-        "Historical incident alignment"
-      ]
-    }
-  },
-  {
-    title: "Affective, Testimonial & Visual",
-    color: "text-rose-400",
-    bg: "bg-rose-400/5",
-    border: "border-rose-400/20",
-    methods: {
-      fa: [
-        "Memory-driven architectural modelling",
-        "Witness POV virtual walkthroughs",
-        "Composite media montage analysis",
-        "Visualising gaps/absences in testimony"
-      ],
-      bc: [
-        "Crowd-sourced media annotation",
-        "Social media insignia recognition",
-        "Facial recognition analysis",
-        "Publicly vetted verification logs"
-      ],
-      hrw: [
-        "Trauma-informed witness interviews",
-        "Co-drawing site maps with witnesses",
-        "Verification of medical documentation",
-        "Legal standard-based illustration"
-      ]
-    }
-  },
-  {
-    title: "Forensic Verification & Provenance",
-    color: "text-zinc-400",
-    bg: "bg-zinc-800/10",
-    border: "border-zinc-800",
-    methods: {
-      fa: [
-        "Iterative sat–model–photo alignment",
-        "Cross-modal acoustic-spatial check",
-        "Uncertainty and probability mapping",
-        "Collaborative public visual argument"
-      ],
-      bc: [
-        "EXIF/metadata forensic extraction",
-        "Reverse image search verification",
-        "File hashing and integrity checks",
-        "Open-source audit trail publication"
-      ],
-      hrw: [
-        "Chain-of-custody for digital evidence",
-        "Satellite sensor metadata validation",
-        "Human rights legal standard checks",
-        "Multi-agency witness corroboration"
-      ]
-    }
-  }
+const METHOD_COLUMNS: { key: keyof Investigation['methodProfile']; label: string }[] = [
+  { key: 'video', label: 'Video' },
+  { key: 'satellite', label: 'Satellite' },
+  { key: 'crater', label: 'Crater / Damage' },
+  { key: 'audio', label: 'Audio' },
+  { key: 'modelling3d', label: '3D Modelling' },
+  { key: 'trajectory', label: 'Trajectory' },
+  { key: 'triangulation', label: 'Triangulation' },
+  { key: 'computational', label: 'Computational' },
 ];
 
-const TaxonomyView: React.FC = () => {
+const paradigmMeta: Record<EpistemicParadigm, { title: string; description: string; color: string; border: string; bg: string }> = {
+  'Conjecture-led': {
+    title: 'Conjecture-led',
+    description: 'Evidence, trained experts, and verification protocols are connected through inferential chains. Knowledge emerges from reading investigative traces — crater morphology, timing, witness media — into a single hypothesis.',
+    color: 'text-[var(--paradigm-conjecture)]',
+    border: 'border-[var(--paradigm-conjecture)]',
+    bg: 'bg-paradigm-conjecture',
+  },
+  'Model-led': {
+    title: 'Model-led',
+    description: 'Data is translated into model space (3D scenes, Doppler curves, simulations). Knowledge emerges from the behaviour of the model rather than from a linear chain of conjectures.',
+    color: 'text-[var(--paradigm-model)]',
+    border: 'border-[var(--paradigm-model)]',
+    bg: 'bg-paradigm-model',
+  },
+  Hybrid: {
+    title: 'Hybrid',
+    description: 'Combines conjecture-led evidence gathering with model-led simulation. Conjectures about munition type and aircraft trajectory are tested through computational systems where results emerge from the model.',
+    color: 'text-[var(--paradigm-hybrid)]',
+    border: 'border-[var(--paradigm-hybrid)]',
+    bg: 'bg-paradigm-hybrid',
+  },
+};
+
+const getAttributionLabel = (inv: Investigation): string => {
+  if (inv.stance.includes('Israeli munition')) return 'Israeli munition';
+  if (inv.stance.includes('Palestinian rocket')) return 'Palestinian rocket';
+  return 'Inconclusive / uncertain';
+};
+
+const getAttributionColor = (label: string): string => {
+  if (label === 'Israeli munition') return 'text-[var(--accent)] bg-stance-israeli';
+  if (label === 'Palestinian rocket') return 'text-[var(--stance-palestinian)] bg-stance-palestinian';
+  return 'text-[var(--stance-uncertain)] bg-stance-uncertain';
+};
+
+const shortOutlet = (outlet: string): string => {
+  if (outlet.includes('Forensic Architecture')) return 'FA';
+  if (outlet.includes('Human Rights Watch')) return 'HRW';
+  if (outlet.includes('New York Times')) return 'NYT';
+  if (outlet.includes('Washington Post')) return 'WaPo';
+  if (outlet.includes('BBC')) return 'BBC';
+  if (outlet.includes('Israel Defense')) return 'IDF';
+  if (outlet.includes('Bellingcat')) return 'BC';
+  if (outlet.includes('Michael Kobs')) return 'Kobs';
+  if (outlet.includes('Maher Arar')) return 'MAB';
+  if (outlet.includes('Earshot')) return 'ES';
+  return outlet.slice(0, 12);
+};
+
+const TaxonomyView: React.FC<Props> = ({ investigations }) => {
+  const sorted = [...investigations].sort(
+    (a, b) => new Date(a.publicationDate).getTime() - new Date(b.publicationDate).getTime()
+  );
+
+  const byParadigm = (paradigm: EpistemicParadigm) =>
+    sorted.filter((inv) => inv.epistemicParadigm === paradigm);
+
   return (
-    <div className="space-y-16">
-      {/* Matrix Header */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-zinc-800 pb-12">
-        {(Object.keys(taxonomyData) as Array<keyof typeof taxonomyData>).map(key => (
-          <div key={key} className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className={`w-4 h-4 bg-white`}></div>
-              <h3 className="text-xl font-black text-white uppercase tracking-tighter">
-                {taxonomyData[key].name}
-              </h3>
+    <div className="space-y-12 w-full max-w-full min-w-0">
+      {/* Paradigm overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {(['Conjecture-led', 'Model-led', 'Hybrid'] as EpistemicParadigm[]).map((paradigm) => {
+          const meta = paradigmMeta[paradigm];
+          const actors = byParadigm(paradigm);
+          return (
+            <div key={paradigm} className={`p-6 border ${meta.border} ${meta.bg} space-y-4`}>
+              <div>
+                <h3 className={`text-sm font-black uppercase tracking-[0.3em] ${meta.color}`}>{meta.title}</h3>
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed mt-3">{meta.description}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {actors.map((inv) => (
+                  <span
+                    key={inv.id}
+                    className={`px-2 py-1 text-[8px] font-black uppercase tracking-widest border ${getAttributionColor(getAttributionLabel(inv))}`}
+                  >
+                    {shortOutlet(inv.outlet)}
+                  </span>
+                ))}
+              </div>
             </div>
-            <p className="text-[11px] text-zinc-500 font-bold uppercase tracking-widest leading-relaxed max-w-sm">
-              {taxonomyData[key].description}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Categories Grid */}
-      <div className="space-y-20">
-        {categories.map((cat, idx) => (
-          <div key={idx} className="space-y-8">
-            <div className="flex items-center gap-6">
-              <h4 className={`text-[12px] font-black uppercase tracking-[0.5em] ${cat.color}`}>
-                {cat.title}
-              </h4>
-              <div className="h-px flex-1 bg-zinc-800"></div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* FA Column */}
-              <div className={`p-8 border ${cat.border} ${cat.bg} space-y-4 relative group overflow-hidden`}>
-                <div className="absolute top-0 right-0 p-3 opacity-5 font-black text-3xl group-hover:opacity-10 transition-opacity">FA</div>
-                {cat.methods.fa.map((item, i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <div className={`w-1 h-1 mt-2 ${cat.color.replace('text-', 'bg-')}`}></div>
-                    <span className="text-[11px] font-bold text-zinc-300 uppercase tracking-tight leading-snug">{item}</span>
-                  </div>
+      {/* Methodology matrix */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-6">
+          <h4 className="text-[12px] font-black uppercase tracking-[0.5em] text-[var(--text-secondary)]">
+            Methodology Comparison Matrix
+          </h4>
+          <div className="h-px flex-1 bg-[var(--bg-elevated)]" />
+        </div>
+        <div className="overflow-x-auto custom-scrollbar border border-[var(--border)] rounded-xl bg-[var(--bg-elevated)]">
+          <table className="w-full min-w-[720px] text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border)] bg-[var(--bg-panel)]">
+                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)] sticky left-0 bg-[var(--bg-panel)] z-10">
+                  Organization
+                </th>
+                <th className="p-3 text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">Paradigm</th>
+                {METHOD_COLUMNS.map((col) => (
+                  <th key={col.key} className="p-3 text-[8px] font-black uppercase tracking-widest text-[var(--text-dim)] text-center">
+                    {col.label}
+                  </th>
                 ))}
-              </div>
-
-              {/* BC Column */}
-              <div className={`p-8 border ${cat.border} ${cat.bg} space-y-4 relative group overflow-hidden`}>
-                <div className="absolute top-0 right-0 p-3 opacity-5 font-black text-3xl group-hover:opacity-10 transition-opacity">BC</div>
-                {cat.methods.bc.map((item, i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <div className={`w-1 h-1 mt-2 ${cat.color.replace('text-', 'bg-')}`}></div>
-                    <span className="text-[11px] font-bold text-zinc-300 uppercase tracking-tight leading-snug">{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* HRW Column */}
-              <div className={`p-8 border ${cat.border} ${cat.bg} space-y-4 relative group overflow-hidden`}>
-                <div className="absolute top-0 right-0 p-3 opacity-5 font-black text-3xl group-hover:opacity-10 transition-opacity">HRW</div>
-                {cat.methods.hrw.map((item, i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <div className={`w-1 h-1 mt-2 ${cat.color.replace('text-', 'bg-')}`}></div>
-                    <span className="text-[11px] font-bold text-zinc-300 uppercase tracking-tight leading-snug">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
+              </tr>
+            </thead>
+            <tbody>
+              {sorted.map((inv) => (
+                <tr key={inv.id} className="border-b border-[var(--border)] hover:bg-[var(--bg-panel)] transition-colors">
+                  <td className="p-3 sticky left-0 bg-[var(--bg)] z-10">
+                    <div className="text-[10px] font-black text-[var(--text)] uppercase tracking-tight">{shortOutlet(inv.outlet)}</div>
+                    <div className="text-[8px] text-[var(--text-dim)] font-mono mt-0.5">{inv.publicationDate}</div>
+                  </td>
+                  <td className="p-3">
+                    <span className={`text-[8px] font-black uppercase tracking-widest ${paradigmMeta[inv.epistemicParadigm].color}`}>
+                      {inv.epistemicParadigm}
+                    </span>
+                  </td>
+                  {METHOD_COLUMNS.map((col) => (
+                    <td key={col.key} className="p-3 text-center">
+                      <span className={`inline-block w-2.5 h-2.5 rounded-full ${inv.methodProfile[col.key] ? 'bg-[var(--accent)]' : 'bg-[var(--bg-elevated)]'}`} />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[9px] text-[var(--text-dim)] font-mono uppercase tracking-widest">
+          IDF row reflects open-source methods only; classified radar and intercept data sit outside this matrix.
+        </p>
       </div>
 
-      <div className="mt-20 p-10 bg-zinc-950 border border-dashed border-zinc-800 flex flex-col items-center justify-center text-center">
-        <p className="text-[10px] text-zinc-600 font-black uppercase tracking-[0.4em] mb-4">Evidentiary Protocol Convergence</p>
-        <p className="text-xs text-zinc-400 max-w-3xl font-medium italic leading-relaxed">
-          The alignment of these methodologies across spatial, temporal, and testimonial categories demonstrates a 
-          shared epistemic standard. Despite differing organizational missions, the convergence on specific verification 
-          technologies (e.g., 3D modelling, sat-to-ground correlation) establishes a unified cross-modal forensic framework.
+      {/* Synthesis */}
+      <div className="p-8 bg-[var(--bg-panel)] border border-dashed border-[var(--border)] text-center space-y-4">
+        <p className="text-[10px] text-[var(--text-dim)] font-black uppercase tracking-[0.4em]">Paradigm–Attribution Alignment</p>
+        <p className="text-xs text-[var(--text-secondary)] max-w-3xl mx-auto font-medium italic leading-relaxed">
+          Across the Al-Ahli case studies, epistemic paradigm aligns closely with final attribution: conjecture-led
+          investigations (except Bellingcat and BBC Verify) lean toward a Palestinian rocket; model-led investigations
+          attribute an Israeli munition. The exception is Maher Arar Blog, which combines both paradigms. Shared
+          evidence — especially the balcony video and crater imagery — does not produce consensus because actors
+          translate the same traces through different knowledge-generation processes.
         </p>
       </div>
     </div>
