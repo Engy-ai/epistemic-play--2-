@@ -25,13 +25,6 @@ const MarkDugganCase: React.FC = () => {
           The shooting of Mark Duggan, London, August 2011 — a second comparative
           study in contested forensic attribution.
         </p>
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed ruled-note pt-1" style={{ fontFamily: 'var(--font-serif)' }}>
-          This case file is being assembled. It will mirror the Al-Ahli structure —
-          spatial registry, chronology, evidence streams and a methods comparison —
-          applied to the disputed ballistic and eyewitness record surrounding the
-          incident and the subsequent inquiry.
-        </p>
-
         <div className="flex flex-wrap items-center gap-3 mt-8">
           <a
             href="https://content.forensic-architecture.org/wp-content/uploads/2020/06/2020.06-Report-The-Killing-of-Mark-Duggan.pdf"
