@@ -229,8 +229,8 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
       <div className="flex-1 min-h-0 relative">
         <div ref={mapContainerRef} className="absolute inset-0 z-0" />
         
-        <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-[1000] pointer-events-none space-y-3 sm:space-y-4 w-[min(24rem,calc(100%-1.5rem))] max-w-full">
-           <div className="bg-[var(--bg-panel)] backdrop-blur-2xl border border-[var(--border)] p-4 sm:p-6  shadow-2xl pointer-events-auto">
+        <div className="absolute top-0 left-3 sm:top-0 sm:left-6 z-[1000] pointer-events-none space-y-3 sm:space-y-4 w-[min(24rem,calc(100%-1.5rem))] max-w-full">
+           <div className="bg-[var(--bg-panel)] backdrop-blur-2xl border border-[var(--border)] p-4 sm:p-6  shadow-2xl pointer-events-auto mt-3 sm:mt-4">
               <div className="flex justify-between items-center mb-4">
                  <h3 className="text-[11px] font-black uppercase tracking-widest text-[var(--text-secondary)] flex items-center gap-2"><Globe size={14} className="text-[var(--accent)]" /> Palestine</h3>
                  <span className="text-[10px] font-mono text-[var(--text-muted)] bg-[var(--bg-elevated)] rounded px-2 py-1 ">{currentDate.toLocaleDateString('en-GB')}</span>
@@ -250,10 +250,9 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
                       className="w-full h-full object-cover opacity-80" 
                       alt="Investigation trace"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-transparent to-transparent" />
                     <div className="absolute bottom-4 left-4 flex gap-2">
                        {selectedInvestigation.media.map((_, i) => (
-                         <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === activeImageIndex ? 'bg-[var(--accent)]' : 'bg-[var(--border-strong)]'}`} style={i === activeImageIndex ? { boxShadow: '0 0 8px var(--accent-glow)' } : {}} />
+                         <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === activeImageIndex ? 'bg-[var(--accent)]' : 'bg-[var(--text-secondary)]'}`} style={i === activeImageIndex ? { boxShadow: '0 0 8px var(--accent-glow)' } : {}} />
                        ))}
                     </div>
                     {selectedInvestigation.media.length > 1 && (
@@ -313,7 +312,7 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
                 <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                    {activeFacility.incidents.filter(i => new Date(i.date) <= currentDate).reverse().map((inc, idx) => (
                      <div key={idx} className="relative pl-5 border-l-2 border-[var(--border)] pb-4">
-                        <div className="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-[var(--accent)] border-2 border-[var(--bg)]"></div>
+                        <div className="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-[var(--accent)] border-2 border-[var(--bg)] z-10"></div>
                         <p className="text-[11px] text-[var(--text-secondary)] font-bold">{inc.description}</p>
                      </div>
                    ))}
@@ -334,7 +333,7 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
              {isPlaying ? <Pause size={24} className="sm:w-8 sm:h-8" /> : <Play size={24} className="ml-0.5 sm:w-8 sm:h-8" />}
            </button>
            <div className="flex-1">
-              <input type="range" min={startDate.getTime()} max={endDate.getTime()} value={currentDate.getTime()} onChange={(e) => setCurrentDate(new Date(parseInt(e.target.value)))} className="w-full h-2 bg-[var(--bg-elevated)]  appearance-none cursor-pointer accent-[var(--accent)]" />
+              <input type="range" min={startDate.getTime()} max={endDate.getTime()} value={currentDate.getTime()} onChange={(e) => setCurrentDate(new Date(parseInt(e.target.value)))} className="w-full cursor-pointer" />
            </div>
         </div>
       </div>

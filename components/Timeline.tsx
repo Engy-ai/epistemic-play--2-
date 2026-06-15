@@ -297,9 +297,9 @@ const Timeline: React.FC<Props> = ({ investigations, highlightedId, onSelect }) 
   return (
     <div
       ref={scrollRef}
-      className="w-full max-w-full h-[600px] overflow-x-auto overflow-y-hidden custom-scrollbar bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl"
+      className="w-full max-w-full h-[600px] overflow-x-auto overflow-y-hidden custom-scrollbar bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl flex items-end"
     >
-      <div className="relative pt-10" style={{ width: `${Math.max(containerWidth, 600)}px`, maxWidth: 'none' }}>
+      <div className="relative pb-8" style={{ width: `${Math.max(containerWidth, 600)}px`, maxWidth: 'none' }}>
         <svg ref={svgRef} className="block" />
       </div>
     </div>

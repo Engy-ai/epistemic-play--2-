@@ -12,7 +12,11 @@ import Timeline from './components/Timeline';
 import ForensicComparison from './components/ForensicComparison';
 import ForensicIndex from './components/ForensicIndex';
 import NodeIngestor from './components/NodeIngestor';
-import { GitBranch, BarChart3, Clock, Map as MapIcon, Layers, Plus } from 'lucide-react';
+import ThesisBook from './components/ThesisBook';
+import MarkDugganCase from './components/MarkDugganCase';
+import { GitBranch, BarChart3, Clock, Map as MapIcon, Layers, Plus, Download, BookOpen, FileSearch } from 'lucide-react';
+
+type CaseTab = 'al-ahli' | 'mark-duggan' | 'book';
 
 const App: React.FC = () => {
   const [investigations, setInvestigations] = useState<Investigation[]>(initialInvestigations);
@@ -27,6 +31,7 @@ const App: React.FC = () => {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
   const [isIngesting, setIsIngesting] = useState(false);
+  const [activeCase, setActiveCase] = useState<CaseTab>('al-ahli');
   
   const [currentDate] = useState<Date>(() => new Date());
 
@@ -71,16 +76,18 @@ const App: React.FC = () => {
     <div className="app-shell min-h-screen flex flex-col font-sans selection:bg-[var(--accent)]/30 bg-[var(--bg)] text-[var(--text)] overflow-x-hidden">
       <header className="w-full min-w-0 z-[60] bg-[var(--bg)]/95 backdrop-blur-xl border-b border-[var(--border)] px-4 sm:px-6 lg:px-8 pt-3 pb-5">
         <div className="file-meta flex items-center justify-between gap-3 pb-3 mb-3 border-b border-dashed border-[var(--border)]">
-          <span>Case File No. 17-10-2023</span>
-          <span className="hidden sm:inline">Comparative Epistemology — Gaza Health Sector</span>
-          <span>Folio 01 / Unverified</span>
+          <span>By Federico Zurani and Engy El Shenawy</span>
+          <span className="hidden sm:inline">investigative models</span>
+          <a href={`${import.meta.env.BASE_URL}thesis.pdf`} target="_blank" rel="noopener noreferrer" className="thesis-btn-secondary px-3 py-1.5 inline-flex items-center gap-2">
+            <Download size={14} />
+            <span>Download thesis</span>
+          </a>
         </div>
         <div className="flex flex-wrap justify-between items-end gap-3">
           <div className="min-w-0 flex-1">
-            <p className="file-meta mb-1">Dossier — Al-Ahli Hospital</p>
-            <h1 className="font-serif-display text-2xl sm:text-4xl leading-[0.95] text-[var(--text)] flex flex-wrap items-baseline gap-x-3">
-              <span style={{ color: 'var(--accent)' }} className="italic">Al-Ahli</span>
-              <span className="font-medium">Investigation Comparison</span>
+            <h1 className="font-serif-display text-xl sm:text-3xl leading-tight text-[var(--text)] flex flex-nowrap items-baseline gap-x-3 whitespace-nowrap">
+              <span style={{ color: 'var(--accent)' }} className="italic">Investigative models</span>
+              <span className="font-medium">— Towards the definition of an epistemic framework of OSINT</span>
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4">
@@ -100,6 +107,42 @@ const App: React.FC = () => {
         </div>
       </header>
 
+      <div className="w-full border-b border-[var(--border)] bg-[var(--bg)] z-[55]">
+        <div className="case-tabbar">
+          <button
+            className={`case-tab ${activeCase === 'al-ahli' ? 'active' : ''}`}
+            onClick={() => setActiveCase('al-ahli')}
+          >
+            <Layers size={13} /> Al-Ahli
+          </button>
+          <button
+            className={`case-tab ${activeCase === 'mark-duggan' ? 'active' : ''}`}
+            onClick={() => setActiveCase('mark-duggan')}
+          >
+            <FileSearch size={13} /> Mark Duggan
+          </button>
+          <button
+            className={`case-tab ${activeCase === 'book' ? 'active' : ''}`}
+            onClick={() => setActiveCase('book')}
+          >
+            <BookOpen size={13} /> Thesis Book
+          </button>
+        </div>
+      </div>
+
+      {activeCase === 'mark-duggan' && (
+        <main className="app-main flex-1 p-4 sm:p-6 w-full mx-auto pb-32 pt-12">
+          <MarkDugganCase />
+        </main>
+      )}
+
+      {activeCase === 'book' && (
+        <main className="app-main flex-1 p-4 sm:p-6 w-full mx-auto pb-32 pt-12 flex justify-center">
+          <ThesisBook />
+        </main>
+      )}
+
+      {activeCase === 'al-ahli' && (
       <main className="app-main flex-1 p-4 sm:p-6 space-y-16 w-full mx-auto pb-32">
         
         {/* 1. SPATIO-TEMPORAL MAP + FORENSIC INDEX (FIRST) */}
@@ -249,6 +292,7 @@ const App: React.FC = () => {
           </section>
         )}
       </main>
+      )}
 
       {/* Ingestor Modal */}
       {isIngesting && (
@@ -261,7 +305,6 @@ const App: React.FC = () => {
       <footer className="w-full px-6 sm:px-10 py-10 border-t border-[var(--border)] bg-[var(--bg-panel)]">
         <div className="file-meta flex flex-wrap items-center justify-between gap-3 max-w-6xl mx-auto">
           <span>Independent Epistemic Workspace</span>
-          <span className="hidden sm:inline">Al-Ahli Hospital · Gaza · Oct 17 2023</span>
           <span>End of file — p.01</span>
         </div>
       </footer>

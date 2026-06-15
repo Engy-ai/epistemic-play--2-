@@ -148,21 +148,6 @@ const TaxonomyView: React.FC<Props> = ({ investigations }) => {
             </tbody>
           </table>
         </div>
-        <p className="text-[9px] text-[var(--text-dim)] font-mono uppercase tracking-widest">
-          IDF row reflects open-source methods only; classified radar and intercept data sit outside this matrix.
-        </p>
-      </div>
-
-      {/* Synthesis */}
-      <div className="p-8 bg-[var(--bg-panel)] border border-dashed border-[var(--border)] text-center space-y-4">
-        <p className="text-[10px] text-[var(--text-dim)] font-black uppercase tracking-[0.4em]">Paradigm–Attribution Alignment</p>
-        <p className="text-xs text-[var(--text-secondary)] max-w-3xl mx-auto font-medium italic leading-relaxed">
-          Across the Al-Ahli case studies, epistemic paradigm aligns closely with final attribution: conjecture-led
-          investigations (except Bellingcat and BBC Verify) lean toward a Palestinian rocket; model-led investigations
-          attribute an Israeli munition. The exception is Maher Arar Blog, which combines both paradigms. Shared
-          evidence — especially the balcony video and crater imagery — does not produce consensus because actors
-          translate the same traces through different knowledge-generation processes.
-        </p>
       </div>
     </div>
   );
