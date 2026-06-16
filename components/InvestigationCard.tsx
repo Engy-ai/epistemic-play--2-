@@ -115,7 +115,7 @@ const InvestigationCard: React.FC<Props> = ({ investigation, isHighlighted, onSe
 
         <div className="space-y-2 mb-6">
           <div className="leader-row">
-            <span className="text-[var(--text-dim)]">Epistemic actor</span>
+            <span className="text-[var(--text-dim)]">Actor</span>
             <span className="leader-fill" />
             <span className={`shrink-0 ${getActorColor(investigation.actorType).split(' ').find(c => c.startsWith('text-')) || 'text-[var(--text-secondary)]'}`}>{investigation.actorType}</span>
           </div>
