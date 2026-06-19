@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
 import { Investigation, EpistemicParadigm } from '../types';
 
 interface Props {
@@ -29,7 +30,17 @@ const getAttributionStampColor = (label: string): string => {
 
 const InvestigationCard: React.FC<Props> = ({ investigation, isHighlighted, onSelect, methodHighlight }) => {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
   const attribution = getAttributionLabel(investigation);
+
+  useEffect(() => {
+    if (!isZoomed) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsZoomed(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isZoomed]);
 
   const getActorColor = (type: string) => {
     if (type.includes("State")) return "border-[var(--accent)] text-[var(--accent)] bg-stance-israeli";
@@ -62,8 +73,9 @@ const InvestigationCard: React.FC<Props> = ({ investigation, isHighlighted, onSe
         <div className="h-48 sm:h-56 lg:h-64 overflow-hidden border-b border-[var(--border)] relative bg-[var(--bg-elevated)]">
           <img 
             src={investigation.media[currentMediaIndex].url} 
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700" 
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 cursor-zoom-in" 
             alt={investigation.media[currentMediaIndex].label} 
+            onClick={(e) => { e.stopPropagation(); setIsZoomed(true); }}
           />
           
           {/* Gallery Navigation */}
@@ -138,8 +150,8 @@ const InvestigationCard: React.FC<Props> = ({ investigation, isHighlighted, onSe
         </div>
 
         <div className="ruled-note bg-[var(--bg-elevated)] p-4 border-l-2 border-[var(--accent)] rounded-r-md mb-2">
-          <div className="file-meta text-[var(--accent)] mb-2">Attribution / claim closure</div>
-          <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed italic" style={{ fontFamily: 'var(--font-serif)' }}>"{investigation.stanceShort}"</p>
+          <div className="file-meta text-[var(--accent)] mb-2">Summary</div>
+          <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed" style={{ fontFamily: 'var(--font-serif)' }}>{investigation.epistemicAnalysis ?? investigation.stanceShort}</p>
         </div>
 
         <div className="pt-5 border-t border-dashed border-[var(--border)] mt-auto flex justify-between items-center">
@@ -159,6 +171,52 @@ const InvestigationCard: React.FC<Props> = ({ investigation, isHighlighted, onSe
           </div>
         </div>
       </div>
+
+      {isZoomed && (
+        <div
+          className="fixed inset-0 z-[9500] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-in"
+          onClick={(e) => { e.stopPropagation(); setIsZoomed(false); }}
+        >
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setIsZoomed(false); }}
+            aria-label="Close image"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-colors"
+          >
+            <X size={20} />
+          </button>
+
+          {investigation.media.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={prevMedia}
+                className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-[10px] font-black text-white uppercase tracking-widest rounded-md transition-colors"
+              >
+                PREV
+              </button>
+              <button
+                type="button"
+                onClick={nextMedia}
+                className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-[10px] font-black text-white uppercase tracking-widest rounded-md transition-colors"
+              >
+                NEXT
+              </button>
+            </>
+          )}
+
+          <figure className="max-w-full max-h-full flex flex-col items-center gap-3" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={investigation.media[currentMediaIndex].url}
+              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+              alt={investigation.media[currentMediaIndex].label}
+            />
+            <figcaption className="text-[11px] text-white/70 font-mono text-center px-4">
+              {investigation.media[currentMediaIndex].label}
+            </figcaption>
+          </figure>
+        </div>
+      )}
     </div>
   );
 };

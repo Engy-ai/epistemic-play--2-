@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'Moslin';
+  src: url('/fonts/MoslinRegular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-moslin {
+  font-family: 'Moslin', var(--font-serif), serif;
+}
+
 /* Friendly light color system */
 :root {
   --bg: #f4f4f5;

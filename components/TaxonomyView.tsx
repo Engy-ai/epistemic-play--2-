@@ -68,9 +68,11 @@ const shortOutlet = (outlet: string): string => {
 };
 
 const TaxonomyView: React.FC<Props> = ({ investigations }) => {
-  const sorted = [...investigations].sort(
-    (a, b) => new Date(a.publicationDate).getTime() - new Date(b.publicationDate).getTime()
-  );
+  const sorted = [...investigations]
+    .filter((inv) => inv.id !== 'idf')
+    .sort(
+      (a, b) => new Date(a.publicationDate).getTime() - new Date(b.publicationDate).getTime()
+    );
 
   const byParadigm = (paradigm: EpistemicParadigm) =>
     sorted.filter((inv) => inv.epistemicParadigm === paradigm);

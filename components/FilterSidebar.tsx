@@ -52,6 +52,27 @@ const FilterSidebar: React.FC<Props> = ({ filters, setFilters }) => {
 
       <div>
         <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-4 flex items-center gap-2">
+          Epistemic Paradigm
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {['all', 'Conjecture-led', 'Model-led', 'Hybrid'].map(p => (
+            <button
+              key={p}
+              onClick={() => updateFilter('paradigm', p)}
+              className={`px-4 py-1.5  text-xs font-semibold border transition-all ${
+                filters.paradigm === p
+                  ? 'bg-[var(--accent)]/10 border-[var(--accent)] text-[var(--accent)]'
+                  : 'bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]'
+              }`}
+            >
+              {p === 'all' ? 'All' : p}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-4 flex items-center gap-2">
           Actor Type
         </h3>
         <select

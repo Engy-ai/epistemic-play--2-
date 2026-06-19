@@ -46,6 +46,7 @@ export interface Investigation {
   outcomeForm: string;
   epistemicParadigm: EpistemicParadigm;
   centralQuestion: string;
+  epistemicAnalysis?: string;
   methodProfile: MethodProfile;
   location?: {
     lat: number;
@@ -84,5 +85,6 @@ export interface FilterState {
   actorType: string;
   mission: string;
   stance: string;
+  paradigm: string;
   highlightMethod: string;
 }

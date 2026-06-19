@@ -95,8 +95,15 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
 
     mapRef.current = map;
 
+    // The map can mount before its container has settled to its final
+    // height (e.g. responsive grid rows). Recalculate once layout settles
+    // so tiles fill the whole viewport instead of a stale/zero size.
+    requestAnimationFrame(() => map.invalidateSize());
+    const sizeFix = window.setTimeout(() => map.invalidateSize(), 250);
+
     // Cleanup for Strict Mode
     return () => {
+      window.clearTimeout(sizeFix);
       map.remove();
       mapRef.current = null;
       investigationMarkersRef.current = {};
@@ -247,7 +254,7 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
   return (
     <div className="flex flex-col h-[750px] w-full max-w-full min-w-0 bg-[var(--bg-elevated)] rounded-2xl overflow-hidden border border-[var(--border)] shadow-sm relative">
       <div className="flex-1 min-h-0 relative">
-        <div ref={mapContainerRef} className="absolute inset-0 z-0" />
+        <div ref={mapContainerRef} className="absolute inset-0 w-full h-full z-0" />
         
         <div className="absolute top-0 left-3 sm:top-0 sm:left-6 z-[1000] pointer-events-none space-y-3 sm:space-y-4 w-[min(24rem,calc(100%-1.5rem))] max-w-full">
            <div className="bg-[var(--bg-panel)] backdrop-blur-2xl border border-[var(--border)] p-4 sm:p-6  shadow-2xl pointer-events-auto mt-3 sm:mt-4">
@@ -304,10 +311,10 @@ const TimeMap: React.FC<Props> = ({ investigations, selectedId, onSelect }) => {
 
                   <div className="bg-[var(--bg-elevated)] p-4 rounded-lg border border-[var(--border)] mb-4">
                     <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-2 flex items-center gap-2">
-                       <ShieldAlert size={10} /> Evidentiary Claim
+                       <ShieldAlert size={10} /> Central question
                     </div>
                     <p className="text-[10px] text-[var(--text-secondary)] font-medium italic leading-relaxed">
-                      "{selectedInvestigation.stanceShort}"
+                      "{selectedInvestigation.centralQuestion}"
                     </p>
                   </div>
 

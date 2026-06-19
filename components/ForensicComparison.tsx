@@ -8,6 +8,45 @@ interface Props {
   investigationB: Investigation | null;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Method concept normalisation                                       */
+/*  Different investigations phrase the same technique differently     */
+/*  (e.g. "Doppler effect mapping" vs "Doppler curve computational     */
+/*  modelling" vs "Doppler shift analysis"). We map raw method labels  */
+/*  to canonical concepts so related methods register as shared and    */
+/*  the comparison reflects that they build on each other.             */
+/* ------------------------------------------------------------------ */
+
+const CONCEPT_RULES: { match: RegExp; concept: string }[] = [
+  { match: /doppler|spectrogram/i, concept: 'Doppler curve analysis' },
+  { match: /acoust|audio|\bsound\b/i, concept: 'Acoustic analysis' },
+  { match: /trajector/i, concept: 'Trajectory reconstruction' },
+  { match: /triangulat/i, concept: 'Triangulation' },
+  { match: /photogrammetry|photo-?match/i, concept: 'Photogrammetry' },
+  { match: /3d|simulation|computational|modelling|modeling/i, concept: 'Computational / 3D modelling' },
+  { match: /satellite/i, concept: 'Satellite imagery' },
+  { match: /geolocation/i, concept: 'Video geolocation' },
+  { match: /crater|damage|blast/i, concept: 'Crater / damage analysis' },
+  { match: /radar|launch detection/i, concept: 'Radar / launch detection' },
+  { match: /intercept/i, concept: 'Intercept analysis' },
+  { match: /shadow/i, concept: 'Shadow analysis' },
+  { match: /timing|temporal/i, concept: 'Timing analysis' },
+  { match: /munition|weapon/i, concept: 'Munition analysis' },
+  { match: /aircraft/i, concept: 'Aircraft trajectory' },
+  { match: /classified|intelligence/i, concept: 'Classified intelligence' },
+];
+
+const methodConcepts = (method: string): string[] => {
+  const hits = CONCEPT_RULES.filter(r => r.match.test(method)).map(r => r.concept);
+  return hits.length ? Array.from(new Set(hits)) : [method];
+};
+
+const conceptSet = (inv: Investigation): Set<string> => {
+  const s = new Set<string>();
+  inv.methodology.forEach(m => methodConcepts(m).forEach(c => s.add(c)));
+  return s;
+};
+
 const ForensicComparison: React.FC<Props> = ({ investigationA, investigationB }) => {
   if (!investigationA || !investigationB) {
     return (
@@ -23,14 +62,22 @@ const ForensicComparison: React.FC<Props> = ({ investigationA, investigationB })
     );
   }
 
-  const sharedMethods = investigationA.methodology.filter(m => investigationB.methodology.includes(m));
+  const conceptsA = conceptSet(investigationA);
+  const conceptsB = conceptSet(investigationB);
+  const sharedMethods = Array.from(conceptsA).filter(c => conceptsB.has(c));
+
+  // A raw method tag counts as shared if any of its concepts appears in the
+  // other investigation's concept set.
+  const isSharedMethod = (method: string, side: 'left' | 'right') => {
+    const other = side === 'left' ? conceptsB : conceptsA;
+    return methodConcepts(method).some(c => other.has(c));
+  };
 
   const objectsIncompatible = investigationA.primaryEpistemicObject !== investigationB.primaryEpistemicObject;
-  const methodsDivergent = sharedMethods.length === 0;
-  const noSharedTime = investigationA.publicationDate !== investigationB.publicationDate && sharedMethods.every(m => !m.toLowerCase().includes('time') && !m.toLowerCase().includes('temporal'));
+  const noSharedTime = investigationA.publicationDate !== investigationB.publicationDate && !sharedMethods.includes('Timing analysis');
   const outcomeIncompatible = investigationA.outcomeForm !== investigationB.outcomeForm;
 
-  const convergence = Math.round((sharedMethods.length / Math.max(investigationA.methodology.length, investigationB.methodology.length)) * 100);
+  const convergence = Math.round((sharedMethods.length / Math.max(conceptsA.size, conceptsB.size)) * 100);
 
   const notes: { label: string; tip: string }[] = [];
   if (objectsIncompatible) notes.push({ label: 'They asked different questions', tip: 'Each investigation set out to answer a structurally different question.' });
@@ -75,19 +122,22 @@ const ForensicComparison: React.FC<Props> = ({ investigationA, investigationB })
 
         <Field icon={<Wrench size={13} />} label="Methods used" align={align}>
           <div className={`flex flex-wrap gap-1.5 ${side === 'right' ? 'justify-end' : ''}`}>
-            {inv.methodology.map(m => (
-              <span
-                key={m}
-                title={sharedMethods.includes(m) ? 'Shared with the other investigation' : undefined}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium border ${
-                  sharedMethods.includes(m)
-                    ? 'bg-[var(--accent)]/15 border-[var(--accent)]/50 text-[var(--accent)]'
-                    : 'bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-muted)]'
-                }`}
-              >
-                {m}
-              </span>
-            ))}
+            {inv.methodology.map(m => {
+              const shared = isSharedMethod(m, side);
+              return (
+                <span
+                  key={m}
+                  title={shared ? 'Related to a method the other investigation uses' : undefined}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium border ${
+                    shared
+                      ? 'bg-[var(--accent)]/15 border-[var(--accent)]/50 text-[var(--accent)]'
+                      : 'bg-[var(--bg-elevated)] border-[var(--border)] text-[var(--text-muted)]'
+                  }`}
+                >
+                  {m}
+                </span>
+              );
+            })}
           </div>
         </Field>
       </div>

@@ -31,6 +31,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Forensic model-based reconstruction",
     epistemicParadigm: "Model-led",
     centralQuestion: "Could the Hamas/Islamic Jihad intercepted missile shown in the Al Jazeera footage be the cause of the incident?",
+    epistemicAnalysis: "Forensic Architecture (FA) approached the incident through 3D modelling, trajectory analysis, and later situated testimony. By reconstructing camera movements and triangulating missile trajectories from multiple videos, FA demonstrated that the missile visible in the widely circulated \"balcony video\" could not have caused the hospital explosion. A later investigation incorporated the testimony of surgeon Dr. Ghassan Abu-Sittah, whose medical expertise suggested injuries consistent with fragmentation munitions rather than Palestinian rockets. FA's first investigation exemplifies a model-led epistemology, where new knowledge emerges through computational reconstruction, while the second aligns more closely with conjectural reasoning, relying on expert testimony as evidence.",
     methodProfile: { video: true, satellite: true, crater: true, audio: true, modelling3d: true, trajectory: true, triangulation: true, computational: true },
     location: { lat: 31.5049, lng: 34.4514, label: "Hospital Courtyard" },
     vector: { origin: [31.5040, 34.4850], angle: 270, magnitude: 0.003 }
@@ -56,6 +57,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "NGO technical report",
     epistemicParadigm: "Conjecture-led",
     centralQuestion: "What does the physical damage at the site tell us about the munition that caused it?",
+    epistemicAnalysis: "HRW relied on ballistic expertise, satellite imagery, crater analysis, and geolocation techniques. Their investigation concluded that the evidence was more consistent with a misfired Palestinian rocket than an Israeli strike. HRW's methodology followed a traditional evidentiary approach centred on expert assessment and verification. As such, it exemplifies a conjecture-led epistemology, where conclusions emerge from the accumulation and interpretation of evidence rather than computational modelling.",
     methodProfile: { video: true, satellite: true, crater: true, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.50495, lng: 34.45142, label: "Parking Lot" }
   },
@@ -78,6 +80,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Interactive visual narrative",
     epistemicParadigm: "Conjecture-led",
     centralQuestion: "Does the visual and physical evidence better match an Israeli airstrike or a misfired rocket?",
+    epistemicAnalysis: "The New York Times Visual Investigations team combined satellite imagery, geolocation, and damage assessment to argue that the explosion was more likely caused by a misfired rocket from Gaza. Although published rapidly after the event, the investigation followed a conventional process of assembling evidence and expert opinions into a coherent explanatory narrative. Like HRW, its approach aligns with conjectural reasoning.",
     methodProfile: { video: true, satellite: true, crater: true, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.5050, lng: 34.4515, label: "Impact Site" }
   },
@@ -100,6 +103,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Investigative feature",
     epistemicParadigm: "Conjecture-led",
     centralQuestion: "Is the IDF's key piece of video evidence what they claim it is?",
+    epistemicAnalysis: "The Washington Post combined triangulation, expert analysis, audio forensics, and crater assessment. It agreed with Forensic Architecture that the projectile in the balcony video was an Israeli Iron Dome interceptor but concluded that the hospital blast itself was more likely caused by a misfired Palestinian rocket. The investigation relied heavily on expert interpretation and abductive reasoning, situating it firmly within a conjecture-led epistemology.",
     methodProfile: { video: true, satellite: false, crater: true, audio: false, modelling3d: false, trajectory: true, triangulation: true, computational: false },
     location: { lat: 31.5052, lng: 34.4510, label: "WaPo Analysis Area" }
   },
@@ -122,6 +126,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Verification summary",
     epistemicParadigm: "Conjecture-led",
     centralQuestion: "Can available audio-visual evidence establish when and from where the projectile was launched with sufficient precision to support an attribution?",
+    epistemicAnalysis: "BBC Verify employed geolocation, audio synchronisation, timing analysis, and expert consultation but ultimately concluded that the available evidence was insufficient to determine responsibility. Despite its inconclusive outcome, the investigation still operated within a conjecture-led framework, relying on evidence evaluation and expert interpretation.",
     methodProfile: { video: true, satellite: false, crater: true, audio: true, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.5049, lng: 34.4514, label: "BBC Analysis Site" }
   },
@@ -144,6 +149,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Operational briefing",
     epistemicParadigm: "Conjecture-led",
     centralQuestion: "Can military intelligence data establish the origin point and identity of the projectile?",
+    epistemicAnalysis: "The IDF immediately attributed the explosion to a misfired Palestinian Islamic Jihad rocket, relying on radar data, intercepted communications, and classified intelligence. However, much of the evidence was not made available for independent verification, and later analyses questioned the authenticity of the intercepted phone call. Rather than presenting a transparent investigative process, the IDF relied on institutional authority and privileged access to classified information. Consequently, its claims cannot be assessed through either conjecture-led or model-led epistemic frameworks, as the methodology and evidentiary basis remain largely inaccessible.",
     methodProfile: { video: false, satellite: false, crater: false, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.5055, lng: 34.4518, label: "IDF Plot" }
   },
@@ -166,6 +172,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Open-source collective analysis",
     epistemicParadigm: "Conjecture-led",
     centralQuestion: "What does the crater tell us about what caused it, and what range of munitions is consistent with its physical characteristics?",
+    epistemicAnalysis: "Bellingcat focused on crater analysis, geolocation, satellite imagery, and 3D reconstruction of the blast site. Unlike most other investigators, it refrained from endorsing any attribution due to insufficient evidence. Its methodology remained grounded in verification and evidentiary assessment, making it another example of a conjecture-led investigation.",
     methodProfile: { video: true, satellite: true, crater: true, audio: false, modelling3d: false, trajectory: false, triangulation: false, computational: false },
     location: { lat: 31.50495, lng: 34.45145, label: "Crater Location" }
   },
@@ -194,6 +201,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Acoustic forensic model",
     epistemicParadigm: "Model-led",
     centralQuestion: "From which direction did the missile arrive?",
+    epistemicAnalysis: "Earshot used acoustic forensics and Doppler curve analysis to challenge the IDF's claim regarding the missile's direction of travel. By comparing audio signatures from multiple recordings, Earshot argued that the projectile could not have originated from the southwest as claimed by the IDF. Their methodology transformed audio data into a model from which new findings emerged, making their investigation strongly compatible with a model-led epistemic framework. However, the approach received criticism for simplifying the missile's three-dimensional movement.",
     methodProfile: { video: true, satellite: false, crater: false, audio: true, modelling3d: false, trajectory: true, triangulation: false, computational: true },
     location: { lat: 31.5051, lng: 34.4520, label: "Doppler Receiver Sites" }
   },
@@ -225,6 +233,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Independent technical report",
     epistemicParadigm: "Model-led",
     centralQuestion: "From what angle was the missile shot?",
+    epistemicAnalysis: "Independent researcher Michael Kobs developed a computational model based on Doppler curve analysis to reconstruct the projectile's trajectory. Combining acoustic simulation, triangulation, and 3D reconstruction, he concluded that the trajectory was most consistent with a munition fired from an Israeli aircraft. Kobs' work represents one of the clearest examples of a model-led investigation, as knowledge emerged through the interaction of multiple computational models rather than through direct interpretation of evidence alone.",
     methodProfile: { video: true, satellite: false, crater: false, audio: true, modelling3d: true, trajectory: true, triangulation: true, computational: true },
     location: { lat: 31.5048, lng: 34.4522, label: "Balcony Video Axis" }
   },
@@ -253,6 +262,7 @@ export const investigations: Investigation[] = [
     outcomeForm: "Independent OSINT blog analysis",
     epistemicParadigm: "Hybrid",
     centralQuestion: "Can computer simulations reproduce the Doppler shift curve of the balcony video to test GBU-39 and GBU-53 munition compatibility?",
+    epistemicAnalysis: "The Maher Arar Blog introduced alternative hypotheses largely overlooked by mainstream investigations, including the possibility that an Israeli GBU-39 bomb caused the explosion. Through technical analysis of damage patterns, aircraft movements, and weapon characteristics, the investigation sought to challenge dominant narratives. While innovative, its conclusions remain difficult to evaluate due to the lack of transparency regarding authorship, expertise, and institutional accountability.",
     methodProfile: { video: true, satellite: false, crater: false, audio: true, modelling3d: false, trajectory: true, triangulation: false, computational: true },
     location: { lat: 31.5047, lng: 34.4518, label: "GBU-39 Simulation Axis" }
   }

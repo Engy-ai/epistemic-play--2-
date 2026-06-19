@@ -6,7 +6,6 @@ import MediaPipeline from './components/MediaPipeline';
 import FilterSidebar from './components/FilterSidebar';
 import InvestigationCard from './components/InvestigationCard';
 import TaxonomyView from './components/TaxonomyView';
-import EvidenceLogicFlow from './components/EvidenceLogicFlow';
 import TimeMap from './components/TimeMap';
 import Timeline from './components/Timeline';
 import ForensicComparison from './components/ForensicComparison';
@@ -14,7 +13,8 @@ import ForensicIndex from './components/ForensicIndex';
 import NodeIngestor from './components/NodeIngestor';
 import ThesisBook from './components/ThesisBook';
 import MarkDugganCase from './components/MarkDugganCase';
-import { GitBranch, BarChart3, Clock, Map as MapIcon, Layers, Plus, Download, BookOpen, FileSearch } from 'lucide-react';
+import EvidenceLogicFlow from './components/EvidenceLogicFlow';
+import { GitBranch, BarChart3, Clock, Map as MapIcon, Layers, Plus, Minus, Download, BookOpen, FileSearch } from 'lucide-react';
 
 type CaseTab = 'al-ahli' | 'mark-duggan' | 'book';
 
@@ -25,6 +25,7 @@ const App: React.FC = () => {
     actorType: 'all',
     mission: 'all',
     stance: 'all',
+    paradigm: 'all',
     highlightMethod: 'none',
   });
 
@@ -32,6 +33,7 @@ const App: React.FC = () => {
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
   const [isIngesting, setIsIngesting] = useState(false);
   const [activeCase, setActiveCase] = useState<CaseTab>('al-ahli');
+  const [introOpen, setIntroOpen] = useState(true);
   
   const [currentDate] = useState<Date>(() => new Date());
 
@@ -46,9 +48,10 @@ const App: React.FC = () => {
 
       const actorMatch = filters.actorType === 'all' || inv.actorType === filters.actorType;
       const stanceMatch = filters.stance === 'all' || inv.stance.includes(filters.stance as any);
+      const paradigmMatch = filters.paradigm === 'all' || inv.epistemicParadigm === filters.paradigm;
       const dateMatch = new Date(inv.publicationDate) <= currentDate;
       
-      return searchMatch && actorMatch && stanceMatch && dateMatch;
+      return searchMatch && actorMatch && stanceMatch && paradigmMatch && dateMatch;
     });
   }, [investigations, filters, currentDate]);
 
@@ -63,6 +66,7 @@ const App: React.FC = () => {
       actorType: 'all',
       mission: 'all',
       stance: 'all',
+      paradigm: 'all',
       highlightMethod: 'none',
     });
     setHighlightedId(null);
@@ -85,9 +89,9 @@ const App: React.FC = () => {
         </div>
         <div className="flex flex-wrap justify-between items-end gap-3">
           <div className="min-w-0 flex-1">
-            <h1 className="font-serif-display text-xl sm:text-3xl leading-tight text-[var(--text)] flex flex-nowrap items-baseline gap-x-3 whitespace-nowrap">
-              <span style={{ color: 'var(--accent)' }} className="italic">Investigative models</span>
-              <span className="font-medium">— Towards the definition of an epistemic framework of OSINT</span>
+            <h1 className="font-serif-display text-xl sm:text-3xl leading-tight text-[var(--text)] flex flex-wrap items-center gap-x-3 gap-y-0 max-w-xl">
+              <span style={{ color: '#000000' }} className="font-moslin text-lg sm:text-2xl">Investigative models</span>
+              <span className="font-sans font-medium text-sm sm:text-base">— Towards the definition of an epistemic framework of OSINT</span>
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4">
@@ -144,7 +148,68 @@ const App: React.FC = () => {
 
       {activeCase === 'al-ahli' && (
       <main className="app-main flex-1 p-4 sm:p-6 space-y-16 w-full mx-auto pb-32">
-        
+
+        {/* 0. CASE INTRODUCTION */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start -mb-10">
+          <div className="lg:col-span-4">
+            <p className="file-meta section-accent-text mb-3">Case opening · Al-Ahli Hospital</p>
+            <button
+              type="button"
+              onClick={() => setIntroOpen((v) => !v)}
+              aria-expanded={introOpen}
+              aria-label={introOpen ? 'Collapse case opening' : 'Expand case opening'}
+              className="flex items-center gap-3 text-left group/intro"
+            >
+              <span className="flex items-center justify-center w-6 h-6 shrink-0 border border-[var(--border-strong)] rounded-full text-[var(--text)] group-hover/intro:bg-[var(--bg-elevated)] transition-colors">
+                {introOpen ? <Minus size={14} /> : <Plus size={14} />}
+              </span>
+              {introOpen && (
+                <h2 className="font-serif-display text-xl sm:text-2xl font-medium text-black leading-tight group-hover/intro:text-[var(--accent)] transition-colors">
+                  Archive of Investigations
+                </h2>
+              )}
+            </button>
+            {introOpen && (
+              <blockquote
+                className="mt-4 pl-4 border-l-2 border-[var(--accent)] text-[14px] leading-relaxed text-[var(--text-secondary)] italic"
+                style={{ fontFamily: 'var(--font-serif)' }}
+              >
+                &ldquo;Palestinian officials say an Israeli strike caused the blast, while Israeli
+                military say it was caused by a failed rocket launch by militant group Islamic
+                Jihad.&rdquo;
+                <cite className="block mt-2 not-italic text-[12px] text-[var(--text-muted)] font-mono">
+                  — Bellingcat
+                </cite>
+              </blockquote>
+            )}
+          </div>
+          {introOpen && (
+          <div
+            className="lg:col-span-8 space-y-4 text-[15px] sm:text-base leading-relaxed text-[var(--text-secondary)] text-right"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            <p className="file-meta invisible select-none !mt-0" aria-hidden="true">Case opening</p>
+            <p>
+              On 17 October 2023, an explosion at al-Ahli Hospital in Gaza-Palestine killed hundreds
+              of people. In the days, weeks, months and years that followed, the incident became the
+              subject of more than ten separate investigations by states, media organisations, human
+              rights groups, and independent OSINT researchers. These inquiries drew on largely
+              overlapping open-source material, yet arrived at very different and, in some cases,
+              mutually incompatible conclusions about the cause of the blast and damage.
+            </p>
+            <p>
+              What makes this divergence remarkable is not the disagreement itself but the conditions
+              under which it occurs. Many organisations involved in the investigation shared similar
+              intentions, professional backgrounds, and normative commitments to human rights and
+              evidentiary rigour. Yet despite this shared horizon, their analyses of the al-Ahli
+              Hospital explosion produced not convergence but divergence: a proliferation of
+              competing &ldquo;truths,&rdquo; each internally coherent, evidence-based, and often
+              methodologically sophisticated.
+            </p>
+          </div>
+          )}
+        </section>
+
         {/* 1. SPATIO-TEMPORAL MAP + FORENSIC INDEX (FIRST) */}
         <section className="hero-grid lg:h-[750px]">
           <div className="min-w-0 h-[420px] lg:h-[750px]">
@@ -155,7 +220,7 @@ const App: React.FC = () => {
               onCompare={setComparisonIds}
             />
           </div>
-          <div className="min-w-0 relative group h-full">
+          <div className="min-w-0 relative group h-[420px] lg:h-full">
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-[10] pointer-events-none">
               <div className="bg-[var(--bg-panel)]/90 backdrop-blur-md border border-[var(--border)] rounded-xl p-4 shadow-lg flex items-center gap-4">
                 <MapIcon size={16} className="text-[var(--accent)]" />
@@ -274,7 +339,7 @@ const App: React.FC = () => {
               <span className="file-tab">05</span>
               <div>
                 <p className="file-meta section-accent-text flex items-center gap-2"><BarChart3 size={13} /> Appendix · Methods table</p>
-                <h2 className="font-serif-display text-2xl sm:text-4xl font-medium text-[var(--text)] leading-tight">Scientific Methods Comparison</h2>
+                <h2 className="font-serif-display text-2xl sm:text-4xl font-medium text-[var(--text)] leading-tight">Evidential Paradigm</h2>
               </div>
             </div>
             <div className="file-meta text-right shrink-0">Al-Ahli / Methods<br/>p.05</div>
